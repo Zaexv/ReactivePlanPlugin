@@ -1,0 +1,34 @@
+<html>
+<head>
+    <title>Replan Plugin Main Screen</title>
+    <meta name="decorator" content="atl.general">
+</head>
+<body class="page-type-admin">
+<div class="content-container">
+
+    <div class="content-body">
+        <h1>Bienvenido al Plugin de Replan</h1>
+        <div class="create-issue-panel">
+
+            <form method="get" id="h" action="replanservlet" class="aui">
+                <input type="hidden" name="actionType" value="getProject">
+                <div class="field-group">
+                    <label for="h-fsummary">
+                        Project Key
+                        <span class="aui-icon icon-required"></span>
+                        <span class="content">required</span>
+                    </label>
+                    <input id="h-fsummary" class="text long-field" type="text" name="project-key">
+                </div>
+
+                <div class="buttons">
+                    <input class="button" type="submit" value="Get My Project">
+                    <a href="replanservlet">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
