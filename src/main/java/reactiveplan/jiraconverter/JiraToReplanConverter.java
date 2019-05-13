@@ -4,10 +4,7 @@ import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.priority.Priority;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.user.ApplicationUser;
-import reactiveplan.entities.Employee;
-import reactiveplan.entities.Feature;
-import reactiveplan.entities.PriorityLevel;
-import reactiveplan.entities.Skill;
+import reactiveplan.entities.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,9 +90,23 @@ public class JiraToReplanConverter {
         return new Employee(appUser.getName(),skills);
     }
 
-    public static Employee setDefaultCalendarToEmployee(Employee employee,int dailyHours, int numWeeks){
+    public static List<DaySlot> getDefaultCalendar(int dailyHours, int numDays, int numWeeks){
+        /*
+        Este calendario asume un número concreto de días y semanas a trabajar y que el empleado está libre para todos los issues.
+         */
 
-        return null;//TODO
+
+        List<DaySlot> calendar = new ArrayList<>();
+        double beginhour = 8.0;
+        double endhour = beginhour + dailyHours;
+        int id = 0;
+        for(int weekNumber = 0; weekNumber < numWeeks; weekNumber++){
+            for(int dayNumber = 0; dayNumber < numDays; dayNumber++){
+                calendar.add(new DaySlot(id, weekNumber, dayNumber, beginhour,endhour,SlotStatus.Free));
+                id++;
+            }
+        }
+        return calendar;
     }
 
 

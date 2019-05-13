@@ -17,6 +17,7 @@ import com.atlassian.reactiveplan.logic.ProjectLogic;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactiveplan.entities.Employee;
 import reactiveplan.entities.Feature;
 import reactiveplan.jiraconverter.JiraToReplanConverter;
 
@@ -26,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TestServlet extends HttpServlet{
     private static final Logger log = LoggerFactory.getLogger(TestServlet.class);
@@ -79,7 +82,56 @@ public class TestServlet extends HttpServlet{
         //testProjectLogic_getProjectUsersWithRole(resp);
 
         //Test5:
-       IssueLogic logic =  IssueLogic.getInstance(issueService,projectService,searchService);
+        //testJiraToReplanConverter_issueToFeature(resp, user);
+
+        //Test6:
+        testJiraToReplanConverter_getDefaultCalendar(resp);
+
+
+    }
+
+    private void testJiraToReplanConverter_getDefaultCalendar(HttpServletResponse resp) throws IOException {
+        ProjectLogic prlogic = ProjectLogic.getInstance(issueService,projectService,searchService);
+        Project pr =  prlogic.getProjectByKey("PDP");
+
+        //TODO Should I separar esto en una función extra para la lógica?
+
+        Set<ApplicationUser> userset = new HashSet<>();
+        for(ProjectRole role : prlogic.getProjectRoles()){
+           userset.addAll(prlogic.getProjectUsersWithRole(role,pr));
+        }
+        Set<Employee> employeeset = new HashSet<>();
+        for(ApplicationUser appuser : userset){
+            Employee e = JiraToReplanConverter.applicationUserToEmployee(appuser, prlogic.getRolesOfUserInProject(appuser,pr));
+            e.setCalendar(JiraToReplanConverter.getDefaultCalendar(8,5,2));
+            employeeset.add(e);
+        }
+
+        for(ApplicationUser appuser : userset){
+            resp.getWriter().write("<html><body><b> AppUser </b>" +
+                    "</br>" +
+                    "</br>" +
+
+                    appuser.toString() +  "</br>" +
+
+
+                    "</body></html>");
+        }
+
+        for(Employee emp : employeeset){
+            resp.getWriter().write("<html><body><b> Employee </b>" +
+                    "</br>" +
+                    "</br>" +
+
+                    emp.toString() +  "</br>" +
+                    emp.getCalendar().toString() +  "</br>" +
+
+                    "</body></html>");
+        }
+    }
+
+    private void testJiraToReplanConverter_issueToFeature(HttpServletResponse resp, ApplicationUser user) throws IOException {
+        IssueLogic logic =  IssueLogic.getInstance(issueService,projectService,searchService);
         Collection<Issue> issues =  logic.getProjectIssues(
             user,"PDP"
     );
@@ -105,7 +157,6 @@ public class TestServlet extends HttpServlet{
 
                     "</body></html>");
         }
-
     }
 
     private void testProjectLogic_getProjectUsersWithRole(HttpServletResponse resp) throws IOException {
