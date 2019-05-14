@@ -142,6 +142,16 @@ public class IssueLogic {
 
     }
 
+
+    public Collection<Issue> getOpenedProjectIssues(ApplicationUser user, String projectKey){
+        //TODO hacer una función que sólo devuela los issues abiertos.
+        return null;
+    }
+
+
+
+
+
     private Issue doIssueQuery(ApplicationUser user, JqlClauseBuilder jqlClauseBuilder) {
         Query query = jqlClauseBuilder.buildQuery();
         PagerFilter pagerFilter = PagerFilter.getUnlimitedFilter();

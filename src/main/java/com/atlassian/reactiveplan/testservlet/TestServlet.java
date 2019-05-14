@@ -11,21 +11,25 @@ import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.jira.util.json.JSONObject;
 import com.atlassian.plugin.spring.scanner.annotation.imports.JiraImport;
 import com.atlassian.reactiveplan.logic.IssueLogic;
 import com.atlassian.reactiveplan.logic.ProjectLogic;
 import com.atlassian.templaterenderer.TemplateRenderer;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactiveplan.entities.Employee;
 import reactiveplan.entities.Feature;
 import reactiveplan.jiraconverter.JiraToReplanConverter;
+import reactiveplan.jsonhandler.ReplanOptimizerRequest;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -93,7 +97,8 @@ public class TestServlet extends HttpServlet{
     private void testJiraToReplanConverter_getDefaultCalendar(HttpServletResponse resp) throws IOException {
         ProjectLogic prlogic = ProjectLogic.getInstance(issueService,projectService,searchService);
         Project pr =  prlogic.getProjectByKey("PDP");
-
+        IssueLogic issueLogic = IssueLogic.getInstance(issueService,projectService,searchService);
+        ApplicationUser currentuser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser();
         //TODO Should I separar esto en una función extra para la lógica?
 
         Set<ApplicationUser> userset = new HashSet<>();
@@ -128,6 +133,30 @@ public class TestServlet extends HttpServlet{
 
                     "</body></html>");
         }
+
+        Collection<Issue> issues = issueLogic.getProjectIssues(currentuser,"PDP");
+        Collection<Feature> features = new ArrayList<>();
+        for(Issue issue : issues){
+            Feature f = JiraToReplanConverter.issueToFeature(issue,issueLogic.getIssueDependencies(issue));
+            features.add(f);
+
+        }
+
+        ReplanOptimizerRequest ror = new ReplanOptimizerRequest(employeeset,features);
+
+        Gson gson = new Gson();
+
+        String request = gson.toJson(ror);
+
+        resp.getWriter().write(features.toString());
+
+        resp.getWriter().write(request);
+
+
+
+
+
+
     }
 
     private void testJiraToReplanConverter_issueToFeature(HttpServletResponse resp, ApplicationUser user) throws IOException {

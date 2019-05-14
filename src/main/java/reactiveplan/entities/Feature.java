@@ -16,6 +16,7 @@ public class Feature {
 
 	private String name;
 
+
 	private PriorityLevel priority;
 
 	private double duration;

@@ -6,17 +6,21 @@ package reactiveplan.entities;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 /**
  * Priority Level of a feature
  * @author Vavou
  *
  */
-public enum PriorityLevel {
+public class PriorityLevel {
+
+	/*
 	VERY_HIGH(1, 160),
 	HIGH(2, 80),
 	MEDIUM(3, 40),
 	LOW(4, 20),
-	VERY_LOW(5, 10);
+	VERY_LOW(5, 10); */
 	
 	/**
 	 * The priority level
@@ -65,6 +69,8 @@ public enum PriorityLevel {
 	 * @param level
 	 * @return the corresponding PriorityLevel
 	 */
+
+	/*
 	public static PriorityLevel getPriorityByLevel(int level) {
 		switch (level) {
 			case 1:
@@ -80,10 +86,13 @@ public enum PriorityLevel {
 		}
 	}
 
+	 */
+
 	@JsonCreator
 	public static PriorityLevel fromValues(
             @JsonProperty("level") int level,
             @JsonProperty("score") int score) {
-		return getPriorityByLevel(level);
+
+		return new PriorityLevel(level,score);
 	}
 }

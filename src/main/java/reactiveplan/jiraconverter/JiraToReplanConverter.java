@@ -27,6 +27,7 @@ public class JiraToReplanConverter {
         } else{
             priority = "undefined";
         }
+
         PriorityLevel priorityLevel = priorityToPriorityLevel(issue.getPriority());
         List<Feature> previousFeatures = new ArrayList<>();
         List<Skill> requiredSkills = getSkillsFromIssue(issue);
@@ -46,32 +47,33 @@ public class JiraToReplanConverter {
         PriorityLevel priorityLevel = null;
 
         if(priority != null){
+
+
             String priorityName = priority.getName();
 
             switch(priorityName.toLowerCase()){
                 case "highest":
-                    priorityLevel =  PriorityLevel.getPriorityByLevel(1);
+                    priorityLevel =  PriorityLevel.fromValues(1,160);
                     break;
                 case "high":
-                    priorityLevel =  PriorityLevel.getPriorityByLevel(2);
+                    priorityLevel =  PriorityLevel.fromValues(2,80);
                     break;
-
                 case "medium":
-                    priorityLevel =  PriorityLevel.getPriorityByLevel(3);
+                    priorityLevel =  PriorityLevel.fromValues(3,40);
                     break;
                 case"low":
-                    priorityLevel =  PriorityLevel.getPriorityByLevel(4);
+                    priorityLevel =  PriorityLevel.fromValues(4,20);
                     break;
                 case "lowest":
-                    priorityLevel =  PriorityLevel.getPriorityByLevel(5);
+                    priorityLevel =  PriorityLevel.fromValues(5,10);
                     break;
                 default:
-                    priorityLevel =  PriorityLevel.getPriorityByLevel(3);
+                    priorityLevel =  PriorityLevel.fromValues(3,40);
                     break;
             }
 
         } else {
-            PriorityLevel.getPriorityByLevel(5);
+           priorityLevel = PriorityLevel.fromValues(5,10);
         }
 
         return priorityLevel;
