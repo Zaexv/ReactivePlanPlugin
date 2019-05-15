@@ -5,12 +5,18 @@ import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.bc.project.ProjectService;
 import com.atlassian.jira.config.ConstantsManager;
 import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
+import com.atlassian.jira.security.roles.ProjectRole;
+import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.spring.scanner.annotation.imports.JiraImport;
 import com.atlassian.reactiveplan.logic.IssueLogic;
+import com.atlassian.reactiveplan.logic.ProjectLogic;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactiveplan.jiraconverter.JiraToReplanConverter;
+import reactiveplan.jsonhandler.ReplanOptimizerRequest;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
@@ -65,16 +71,36 @@ public class ReplanServlet extends HttpServlet{
         String action = Optional.ofNullable(req.getParameter("actionType")).orElse("");
         Map<String,Object> context = new HashMap<>();
         resp.setContentType("text/html;charset=utf-8");
+        IssueLogic issLogic = IssueLogic.getInstance(issueService,projectService,searchService);
+        Collection<Issue> projectIssues = null;
         switch(action){
            case "getProject":
-               IssueLogic issLogic = IssueLogic.getInstance(issueService,projectService,searchService);
 
-              Collection<Issue> projectIssues =  issLogic.getProjectIssues(authenticationContext.getLoggedInUser(),req.getParameter("project-key"));
+
+                projectIssues =  issLogic.getProjectIssues(authenticationContext.getLoggedInUser(),req.getParameter("project-key"));
                 context.put("issues",projectIssues);
                 templateRenderer.render(LIST_ISSUES_TEMPLATE, context, resp.getWriter());
                 break;
 
+            case "getProjectPlan":
 
+                issLogic = IssueLogic.getInstance(issueService,projectService,searchService);
+                ProjectLogic prlogic = ProjectLogic.getInstance(issueService,projectService,searchService);
+                Project pr = prlogic.getProjectByKey(req.getParameter("project-key"));
+                projectIssues =  issLogic.getProjectIssues(authenticationContext.getLoggedInUser(),req.getParameter("project-key"));
+                context.put("issues",projectIssues);
+                Set<ApplicationUser> userset = new HashSet<>();
+                for(ProjectRole role : prlogic.getProjectRoles()){
+                    userset.addAll(prlogic.getProjectUsersWithRole(role,pr));
+                }
+
+                ReplanOptimizerRequest replanRequest = new ReplanOptimizerRequest(JiraToReplanConverter.
+                        applicationUsersToEmployees(userset,prlogic,pr),
+                        JiraToReplanConverter.
+                                issuesToFeatures(projectIssues,issLogic));
+                String response = replanRequest.doRequest();
+                resp.getWriter().write(response);
+                break;
 
             default:
 

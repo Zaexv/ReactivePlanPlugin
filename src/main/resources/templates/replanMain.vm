@@ -11,7 +11,7 @@
         <div class="create-issue-panel">
 
             <form method="get" id="h" action="replanservlet" class="aui">
-                <input type="hidden" name="actionType" value="getProject">
+                <input type="hidden" name="actionType" value="getProjectPlan">
                 <div class="field-group">
                     <label for="h-fsummary">
                         Project Key
@@ -25,6 +25,7 @@
                     <input class="button" type="submit" value="Get My Project">
                     <a href="replanservlet">Cancel</a>
                 </div>
+
             </form>
         </div>
     </div>

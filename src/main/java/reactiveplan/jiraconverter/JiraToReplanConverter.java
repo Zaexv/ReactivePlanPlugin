@@ -2,14 +2,14 @@ package reactiveplan.jiraconverter;
 
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.priority.Priority;
+import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.reactiveplan.logic.IssueLogic;
+import com.atlassian.reactiveplan.logic.ProjectLogic;
 import reactiveplan.entities.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class JiraToReplanConverter {
 
@@ -41,6 +41,19 @@ public class JiraToReplanConverter {
 
         return new Feature(name, priorityLevel, duration, previousFeatures, requiredSkills);
     }
+
+    public static Collection<Feature> issuesToFeatures(Collection<Issue> issues, IssueLogic issueLogic){
+        Collection<Feature> features = new ArrayList<>();
+
+
+        for(Issue issue : issues){
+            features.add(issueToFeature(issue, issueLogic.getIssueDependencies(issue)));
+        }
+        return features;
+    }
+
+
+
     /* Utiliza las prioridades por defecto de JIRA */
     public static PriorityLevel priorityToPriorityLevel(Priority priority){
 
@@ -90,6 +103,21 @@ public class JiraToReplanConverter {
           skills.add(projectRoleToSkill(role));
         }
         return new Employee(appUser.getName(),skills);
+    }
+
+
+    public static Set<Employee> applicationUsersToEmployees(Set<ApplicationUser> users, ProjectLogic prlogic, Project pr ){
+
+        Set<Employee> employeeset = new HashSet<>();
+
+        for(ApplicationUser appuser : users){
+        Employee e = JiraToReplanConverter.applicationUserToEmployee(appuser, prlogic.getRolesOfUserInProject(appuser,pr));
+
+        //Les ponemos el calendario por defecto.
+        e.setCalendar(JiraToReplanConverter.getDefaultCalendar(8,5,2));
+        employeeset.add(e);
+        }
+        return employeeset;
     }
 
     public static List<DaySlot> getDefaultCalendar(int dailyHours, int numDays, int numWeeks){
