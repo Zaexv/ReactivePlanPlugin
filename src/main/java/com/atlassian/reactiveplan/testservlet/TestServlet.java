@@ -100,7 +100,7 @@ public class TestServlet extends HttpServlet{
         IssueLogic issueLogic = IssueLogic.getInstance(issueService,projectService,searchService);
         ApplicationUser currentuser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser();
         //TODO Should I separar esto en una función extra para la lógica?
-
+        resp.getWriter().write("Esto lo escribo solo pa que no pete hosstia");
         Set<ApplicationUser> userset = new HashSet<>();
         for(ProjectRole role : prlogic.getProjectRoles()){
            userset.addAll(prlogic.getProjectUsersWithRole(role,pr));

@@ -99,7 +99,13 @@ public class ReplanServlet extends HttpServlet{
                         JiraToReplanConverter.
                                 issuesToFeatures(projectIssues,issLogic));
                 String response = replanRequest.doRequest();
-                resp.getWriter().write(response);
+
+                if(response == null){
+                    resp.getWriter().write("Error, no se ha podido hacer el plan :(");
+                } else {
+                    //TODO renderizo la respuesta.
+                    resp.getWriter().write(response);
+                }
                 break;
 
             default:
