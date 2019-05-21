@@ -12,6 +12,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import reactiveplan.entities.Employee;
 import reactiveplan.entities.Feature;
+import reactiveplan.entities.PlannedFeature;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,7 +22,8 @@ import java.util.Set;
 public class ReplanOptimizerRequest {
 
 
-    /* Aquí se define el Endpoint de REPLAN */
+    /* Aquí se define el Endpoint de REPLAN
+    * TODO Hacer que el Endpoint se coja de un archivo de propiedades o algo así */
 
     //static String endpoint = "http://gessi-sw.essi.upc.edu:8080/replan_optimizer-0.0.1/replan";
 
@@ -30,7 +32,7 @@ public class ReplanOptimizerRequest {
 
     private Set<Employee> resources;
     private Collection<Feature> features;
-
+    private String requestResponse;
 
     public ReplanOptimizerRequest(Set<Employee> employeesRequest, Collection<Feature> featureRequest){
         this.resources = employeesRequest;
@@ -43,7 +45,7 @@ public class ReplanOptimizerRequest {
         HttpPost httpPost = new HttpPost(endpoint);
         httpPost.setEntity(new StringEntity(gson.toJson(this)));
 
-        //Este handler está copiado de internet
+        /* Este handler está copiado de internet */
         ResponseHandler<String> responseHandler = response -> {
             int status = response.getStatusLine().getStatusCode();
             if (status >= 200 && status < 300) {
@@ -54,8 +56,9 @@ public class ReplanOptimizerRequest {
             }
         };
         String responseBody = httpClient.execute(httpPost,responseHandler);
-
-       return responseBody;
+        requestResponse = requestResponse;
+       ReplanOptimizerResponse responseObject = gson.fromJson(responseBody,ReplanOptimizerResponse.class);
+       return responseBody.concat(responseObject.toString());
     }
 
     public Set<Employee> getEmployeesRequest() {

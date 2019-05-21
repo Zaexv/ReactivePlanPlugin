@@ -114,13 +114,13 @@ public class JiraToReplanConverter {
         Employee e = JiraToReplanConverter.applicationUserToEmployee(appuser, prlogic.getRolesOfUserInProject(appuser,pr));
 
         //Les ponemos el calendario por defecto.
-        e.setCalendar(JiraToReplanConverter.getDefaultCalendar(8,5,2));
+        e.setCalendar(JiraToReplanConverter.getDefaultCalendar(8.0,5,2));
         employeeset.add(e);
         }
         return employeeset;
     }
 
-    public static List<DaySlot> getDefaultCalendar(int dailyHours, int numDays, int numWeeks){
+    public static List<DaySlot> getDefaultCalendar(double dailyHours, int numDays, int numWeeks){
         /*
         Este calendario asume un número concreto de días y semanas a trabajar y que el empleado está libre para todos los issues.
          */
