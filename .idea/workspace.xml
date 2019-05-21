@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00e01fe1-3940-4893-9a13-594259452f4f" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/reactiveplan/jsonhandler/ReplanOptimizerResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/reactiveplan/jiraconverter/JiraToReplanConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/reactiveplan/jiraconverter/JiraToReplanConverter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/reactiveplan/jsonhandler/ReplanOptimizerRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/reactiveplan/jsonhandler/ReplanOptimizerRequest.java" afterDir="false" />
     </list>
     <ignored path="ReactivePlanPlugin.iws" />
@@ -27,20 +24,35 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/reactiveplan/entities/DaySlot.java">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/reactiveplan/jsonhandler/ReplanOptimizerRequest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="1" column="13" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
+            <state relative-caret-position="8">
+              <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/reactiveplan/jsonhandler/ReplanOptimizerRequest.java">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/atlassian/reactiveplan/servlet/IssueCRUD.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="473">
-              <caret line="59" column="13" lean-forward="true" selection-start-line="59" selection-start-column="13" selection-end-line="59" selection-end-column="13" />
+            <state relative-caret-position="203">
+              <caret line="161" column="54" lean-forward="true" selection-start-line="161" selection-start-column="54" selection-end-line="161" selection-end-column="54" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/atlassian/reactiveplan/logic/IssueLogic.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="865">
+              <caret line="138" column="32" selection-start-line="138" selection-start-column="32" selection-end-line="138" selection-end-column="32" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -51,11 +63,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/reactiveplan/jiraconverter/JiraToReplanConverter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="43">
-              <caret line="121" lean-forward="true" selection-start-line="121" selection-end-line="121" />
+            <state relative-caret-position="303">
+              <caret line="105" column="5" lean-forward="true" selection-start-line="105" selection-start-column="5" selection-end-line="105" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/atlassian/reactiveplan/servlet/ReplanServlet.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="384">
+              <caret line="105" column="50" selection-start-line="105" selection-start-column="50" selection-end-line="105" selection-end-column="50" />
             </state>
           </provider>
         </entry>
@@ -127,27 +148,6 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/reactiveplan/entities/Schedule.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/reactiveplan/entities/Employee.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="33" column="4" selection-start-line="33" selection-start-column="4" selection-end-line="33" selection-end-column="4" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -191,7 +191,6 @@
         <option value="$PROJECT_DIR$/src/main/resources/templates/edit.vm" />
         <option value="$PROJECT_DIR$/src/main/resources/templates/new.vm" />
         <option value="$PROJECT_DIR$/src/main/resources/templates/list.vm" />
-        <option value="$PROJECT_DIR$/src/main/java/com/atlassian/reactiveplan/servlet/IssueCRUD.java" />
         <option value="$PROJECT_DIR$/src/main/resources/ReactivePlanPlugin.properties" />
         <option value="$PROJECT_DIR$/src/main/resources/atlassian-plugin.xml" />
         <option value="$PROJECT_DIR$/src/main/java/reactiveplan/entities/DaySlot.java" />
@@ -216,8 +215,9 @@
         <option value="$PROJECT_DIR$/src/test/java/it/com/atlassian/reactiveplan/plugin/MyComponentWiredTest.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/reactiveplan/entities/PriorityLevel.java" />
-        <option value="$PROJECT_DIR$/src/main/java/reactiveplan/jsonhandler/ReplanOptimizerRequest.java" />
         <option value="$PROJECT_DIR$/src/main/java/reactiveplan/jsonhandler/ReplanOptimizerResponse.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/atlassian/reactiveplan/servlet/IssueCRUD.java" />
+        <option value="$PROJECT_DIR$/src/main/java/reactiveplan/jsonhandler/ReplanOptimizerRequest.java" />
         <option value="$PROJECT_DIR$/src/main/java/reactiveplan/jiraconverter/JiraToReplanConverter.java" />
       </list>
     </option>
@@ -574,7 +574,7 @@
       <workItem from="1557924305789" duration="1703000" />
       <workItem from="1558025649081" duration="3422000" />
       <workItem from="1558372711541" duration="9285000" />
-      <workItem from="1558449478727" duration="2320000" />
+      <workItem from="1558449478727" duration="4396000" />
     </task>
     <task id="LOCAL-00001" summary="Primer Commit">
       <created>1557502940626</created>
@@ -587,7 +587,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="68913000" />
+    <option name="totallyTimeSpent" value="70989000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
@@ -686,16 +686,6 @@
     <entry file="file://$PROJECT_DIR$/src/main/resources/css/ReactivePlanPlugin.css">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/atlassian/reactiveplan/servlet/IssueCRUD.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="56" column="76" selection-start-line="56" selection-start-column="3" selection-end-line="56" selection-end-column="76" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/templates/list.vm">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="570">
@@ -750,16 +740,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
           <caret line="8" column="8" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/atlassian/reactiveplan/logic/IssueLogic.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1350">
-          <caret line="138" column="32" selection-start-line="138" selection-start-column="32" selection-end-line="138" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -858,13 +838,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/atlassian/reactiveplan/servlet/ReplanServlet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="474">
-          <caret line="105" column="50" selection-start-line="105" selection-start-column="50" selection-end-line="105" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/reactiveplan/entities/Entities.ucls">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2580">
@@ -960,10 +933,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/atlassian/reactiveplan/servlet/ReplanServlet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="384">
+          <caret line="105" column="50" selection-start-line="105" selection-start-column="50" selection-end-line="105" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/reactiveplan/jiraconverter/JiraToReplanConverter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="43">
-          <caret line="121" lean-forward="true" selection-start-line="121" selection-end-line="121" />
+        <state relative-caret-position="303">
+          <caret line="105" column="5" lean-forward="true" selection-start-line="105" selection-start-column="5" selection-end-line="105" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/atlassian/reactiveplan/logic/IssueLogic.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="865">
+          <caret line="138" column="32" selection-start-line="138" selection-start-column="32" selection-end-line="138" selection-end-column="32" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/atlassian/reactiveplan/servlet/IssueCRUD.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="161" column="54" lean-forward="true" selection-start-line="161" selection-start-column="54" selection-end-line="161" selection-end-column="54" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -972,8 +972,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/reactiveplan/jsonhandler/ReplanOptimizerRequest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="473">
-          <caret line="59" column="13" lean-forward="true" selection-start-line="59" selection-start-column="13" selection-end-line="59" selection-end-column="13" />
+        <state relative-caret-position="8">
+          <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

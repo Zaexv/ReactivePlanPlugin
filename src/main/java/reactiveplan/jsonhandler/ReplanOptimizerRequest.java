@@ -25,9 +25,9 @@ public class ReplanOptimizerRequest {
     /* Aquí se define el Endpoint de REPLAN
     * TODO Hacer que el Endpoint se coja de un archivo de propiedades o algo así */
 
-    //static String endpoint = "http://gessi-sw.essi.upc.edu:8080/replan_optimizer-0.0.1/replan";
+    static String endpoint = "http://gessi-sw.essi.upc.edu:8080/replan_optimizer-0.0.1/replan";
 
-    static String endpoint = "https://replan-optimizer-llavor.herokuapp.com/replan";
+ //   static String endpoint = "https://replan-optimizer-llavor.herokuapp.com/replan";
 
 
     private Set<Employee> resources;
