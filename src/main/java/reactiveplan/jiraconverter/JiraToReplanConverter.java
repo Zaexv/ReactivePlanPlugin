@@ -17,8 +17,8 @@ public class JiraToReplanConverter {
 
         String name = issue.getKey();
         Double duration = 0.0;
-        if(issue.getEstimate() != null) {
-            duration = Double.parseDouble(issue.getEstimate().toString());
+        if(issue.getOriginalEstimate() != null) {
+            duration = Double.parseDouble(issue.getOriginalEstimate().toString()); //TODO convertir milisegundos a horas.
         }
 
         String priority;
@@ -114,7 +114,7 @@ public class JiraToReplanConverter {
         Employee e = JiraToReplanConverter.applicationUserToEmployee(appuser, prlogic.getRolesOfUserInProject(appuser,pr));
 
         //Les ponemos el calendario por defecto.
-        e.setCalendar(JiraToReplanConverter.getDefaultCalendar(8.0,5,2));
+        e.setCalendar(JiraToReplanConverter.getDefaultCalendar(8.0,5,4));
         employeeset.add(e);
         }
         return employeeset;

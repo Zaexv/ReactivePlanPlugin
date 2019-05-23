@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.List;
 
@@ -110,7 +111,7 @@ public class IssueLogic {
         //Se asumirá que hay una dependencia si hay otro issue enlazado sea cual sea su estado.
 
 
-         List<IssueLink> links  =       ComponentAccessor.getIssueLinkManager().getOutwardLinks(issue.getId());
+         List<IssueLink> links  = ComponentAccessor.getIssueLinkManager().getOutwardLinks(issue.getId());
          Collection<Issue> dependencies = new ArrayList<> ();
 
          for (IssueLink issueLink : links){
@@ -163,7 +164,7 @@ public class IssueLogic {
 
 
 
-    private void handleIssueEdit(ApplicationUser user, String issueKey, Date dueDate, Date beginDate, String assigneeID) {
+    private void handleIssueEdit(ApplicationUser user, String issueKey, Timestamp dueDate, Timestamp beginDate, String assigneeID) {
 
 
 

@@ -58,7 +58,7 @@ public class ReplanOptimizerRequest {
         String responseBody = httpClient.execute(httpPost,responseHandler);
         requestResponse = requestResponse;
        ReplanOptimizerResponse responseObject = gson.fromJson(responseBody,ReplanOptimizerResponse.class);
-       return responseBody.concat(responseObject.toString());
+       return responseBody;
     }
 
     public Set<Employee> getEmployeesRequest() {
