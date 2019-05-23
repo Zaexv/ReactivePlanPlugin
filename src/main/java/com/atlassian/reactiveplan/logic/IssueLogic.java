@@ -1,21 +1,14 @@
 package com.atlassian.reactiveplan.logic;
 
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.atlassian.jira.issue.link.IssueLink;
@@ -47,6 +40,7 @@ import com.atlassian.jira.util.json.JSONObject;
 import com.atlassian.jira.web.bean.PagerFilter;
 import com.atlassian.jira.web.util.AttachmentException;
 import com.atlassian.query.Query;
+import reactiveplan.jsonhandler.ReplanOptimizerResponse;
 
 
 public class IssueLogic {
@@ -165,6 +159,29 @@ public class IssueLogic {
         List<Issue> list = searchResults.getIssues();
 
         return list.size() == 1 ? list.get(0) : null;
+    }
+
+
+
+    private void handleIssueEdit(ApplicationUser user, String issueKey, Date dueDate, Date beginDate, String assigneeID) {
+
+
+
+      //  Map<String, Object> context = new HashMap<>();
+        MutableIssue issue = issueService.getIssue(user, issueKey).getIssue();
+        IssueInputParameters issueInputParameters = issueService.newIssueInputParameters();
+        if(dueDate != null) issueInputParameters.setDueDate(String.valueOf(dueDate));
+        if(beginDate != null)  issueInputParameters.setDescription(issue.getDescription().concat(String.valueOf(beginDate)));
+        if(assigneeID != null) issueInputParameters.setAssigneeId(assigneeID);
+
+        IssueService.UpdateValidationResult result =
+                issueService.validateUpdate(user, issue.getId(), issueInputParameters);
+
+        if (result.getErrorCollection().hasAnyErrors()) {
+            //TODO cláusula de error, gestión de errores de REPLAN
+        } else {
+            issueService.update(user, result); //TODO ver qué pasa cuando un issue se actualiza
+        }
     }
 
 

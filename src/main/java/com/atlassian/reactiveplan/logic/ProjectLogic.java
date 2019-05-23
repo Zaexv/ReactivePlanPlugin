@@ -16,10 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProjectLogic {
@@ -79,6 +76,16 @@ public class ProjectLogic {
         ProjectRoleManager pRoleManager =  ComponentAccessor.getComponent(ProjectRoleManager.class);
        ProjectRoleActors pra = pRoleManager.getProjectRoleActors(role,project);
        return pra.getApplicationUsers();
+    }
+
+    public Set<ApplicationUser> getAllProjectUsers(String projectKey){
+        Project pr = this.getProjectByKey(projectKey);
+        Set<ApplicationUser> userset = new HashSet<>();
+        for(ProjectRole role : this.getProjectRoles()){
+            userset.addAll(this.getProjectUsersWithRole(role,pr));
+        }
+
+        return userset;
     }
 
     public Collection<Version> getUnReleasedProjectVersions(Project project){

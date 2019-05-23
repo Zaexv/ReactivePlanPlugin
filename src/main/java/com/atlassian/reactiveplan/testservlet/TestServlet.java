@@ -28,6 +28,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -89,8 +90,10 @@ public class TestServlet extends HttpServlet{
         //testJiraToReplanConverter_issueToFeature(resp, user);
 
         //Test6:
-        testJiraToReplanConverter_getDefaultCalendar(resp);
+        // testJiraToReplanConverter_getDefaultCalendar(resp);
 
+        HttpSession session = req.getSession();
+        resp.getWriter().write(session.getAttribute("plan").toString());
 
     }
 

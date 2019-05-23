@@ -22,6 +22,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
 
@@ -84,26 +85,25 @@ public class ReplanServlet extends HttpServlet{
 
             case "getProjectPlan":
 
+                String projectKey = req.getParameter("project-key");
                 issLogic = IssueLogic.getInstance(issueService,projectService,searchService);
                 ProjectLogic prlogic = ProjectLogic.getInstance(issueService,projectService,searchService);
-                Project pr = prlogic.getProjectByKey(req.getParameter("project-key"));
                 projectIssues =  issLogic.getProjectIssues(authenticationContext.getLoggedInUser(),req.getParameter("project-key"));
                 context.put("issues",projectIssues);
-                Set<ApplicationUser> userset = new HashSet<>();
-                for(ProjectRole role : prlogic.getProjectRoles()){
-                    userset.addAll(prlogic.getProjectUsersWithRole(role,pr));
-                }
+
+                Project pr = prlogic.getProjectByKey(projectKey);
+                Set<ApplicationUser> userset = prlogic.getAllProjectUsers(projectKey);
 
                 ReplanOptimizerRequest replanRequest = new ReplanOptimizerRequest(JiraToReplanConverter.
                         applicationUsersToEmployees(userset,prlogic,pr),
                         JiraToReplanConverter.
                                 issuesToFeatures(projectIssues,issLogic));
                 String response = replanRequest.doRequest();
-
+                HttpSession session = req.getSession();
                 if(response == null){
                     resp.getWriter().write("Error, no se ha podido hacer el plan :(");
                 } else {
-                    //TODO renderizo la respuesta.
+                    session.setAttribute("plan", response);
                     resp.getWriter().write(response);
                 }
                 break;
@@ -114,6 +114,12 @@ public class ReplanServlet extends HttpServlet{
                 break;
 
         }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    {
+
     }
 
 }
