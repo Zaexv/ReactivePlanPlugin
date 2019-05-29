@@ -96,13 +96,16 @@ public class TestServlet extends HttpServlet{
         Gson gson = new Gson();
         ReplanOptimizerResponse response =
                 gson.fromJson(session.getAttribute("plan").toString(), ReplanOptimizerResponse.class);
+        resp.getWriter().write(response.toString());
 
         for(Employee e : response.getEmployees()) {
 
-           resp.getWriter().write(ReplanToJiraConverter.getIssueBeginDateFromCalendar(e.getCalendar(),"PDP-2", new Date()).toString());
-            resp.getWriter().write(ReplanToJiraConverter.getIssueEndDateFromCalendar(e.getCalendar(),"PDP-2", new Date()).toString());
+           resp.getWriter().write(ReplanToJiraConverter.getIssueBeginDateFromCalendar(e.getCalendar(),"PDP-2", new Date()));
+            resp.getWriter().write(ReplanToJiraConverter.getIssueEndDateFromCalendar(e.getCalendar(),"PDP-2", new Date()));
 
         }
+        IssueLogic issueLogic = IssueLogic.getInstance(issueService,projectService,searchService);
+        ReplanToJiraConverter.persistAllFeaturesToJira(user,response.getEmployees(),issueLogic, new Date());
 
 
 

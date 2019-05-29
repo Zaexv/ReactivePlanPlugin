@@ -3,6 +3,7 @@ package reactiveplan.jiraconverter;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.priority.Priority;
 import com.atlassian.jira.project.Project;
+import com.atlassian.jira.project.version.Version;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.reactiveplan.logic.IssueLogic;
@@ -18,7 +19,7 @@ public class JiraToReplanConverter {
         String name = issue.getKey();
         Double duration = 0.0;
         if(issue.getOriginalEstimate() != null) {
-            duration = Double.parseDouble(issue.getOriginalEstimate().toString()); //TODO convertir milisegundos a horas.
+            duration = (double) issue.getOriginalEstimate()/(1000*3600);
         }
 
         String priority;
@@ -139,6 +140,19 @@ public class JiraToReplanConverter {
         return calendar;
     }
 
+    private static List<DaySlot> getCalendarFromVersion(double dailyHours, Version version, int numDays){
+
+       Date startDate = version.getStartDate();
+       Date releaseDate =  version.getReleaseDate();
+
+       Long timeBetweenDates = releaseDate.getTime() - startDate.getTime();
+
+       Double totalnumberdays = (double)timeBetweenDates/(24*3600*1000); //TODO debuggear
+
+        int numWeeks = (int)(totalnumberdays/numDays);
+
+        return getDefaultCalendar(dailyHours, numDays, numWeeks);
+    }
 
     private static List<Skill> getSkillsFromIssue(Issue issue){
         /* Se deben poner las skills en la descripción en el siguiente formato:

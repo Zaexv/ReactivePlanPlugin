@@ -16,6 +16,7 @@ import com.atlassian.templaterenderer.TemplateRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactiveplan.jiraconverter.JiraToReplanConverter;
+import reactiveplan.jiraconverter.ReplanToJiraConverter;
 import reactiveplan.jsonhandler.ReplanOptimizerRequest;
 
 import javax.servlet.*;

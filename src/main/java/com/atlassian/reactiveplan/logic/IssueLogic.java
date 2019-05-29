@@ -163,15 +163,14 @@ public class IssueLogic {
     }
 
 
-
-    private void handleIssueEdit(ApplicationUser user, String issueKey, Timestamp dueDate, Timestamp beginDate, String assigneeID) {
+    public void handleIssueEdit(ApplicationUser user, String issueKey, String dueDate, String beginDate, String assigneeID) {
 
 
 
       //  Map<String, Object> context = new HashMap<>();
         MutableIssue issue = issueService.getIssue(user, issueKey).getIssue();
         IssueInputParameters issueInputParameters = issueService.newIssueInputParameters();
-        if(dueDate != null) issueInputParameters.setDueDate(String.valueOf(dueDate));
+        if(dueDate != null) issueInputParameters.setDueDate(dueDate);
         if(beginDate != null)  issueInputParameters.setDescription(issue.getDescription().concat(String.valueOf(beginDate)));
         if(assigneeID != null) issueInputParameters.setAssigneeId(assigneeID);
 
@@ -179,7 +178,7 @@ public class IssueLogic {
                 issueService.validateUpdate(user, issue.getId(), issueInputParameters);
 
         if (result.getErrorCollection().hasAnyErrors()) {
-            //TODO cláusula de error, gestión de errores de REPLAN
+           throw new Error(dueDate + " " + result.getErrorCollection().toString()); //TODO gestión de errores
         } else {
             issueService.update(user, result); //TODO ver qué pasa cuando un issue se actualiza
         }
