@@ -17,9 +17,9 @@ public class JiraToReplanConverter {
     public static Feature issueToFeature(Issue issue, Collection<Issue> issueDependencies){
 
         String name = issue.getKey();
-        Double duration = 0.0;
+        Double duration = 1.0; //TODO CAMBIAR 
         if(issue.getOriginalEstimate() != null) {
-            duration = (double) issue.getOriginalEstimate()/(1000*3600);
+            duration = (double) issue.getOriginalEstimate()/(3600);
         }
 
         String priority;
