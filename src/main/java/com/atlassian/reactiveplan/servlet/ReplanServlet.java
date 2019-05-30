@@ -7,7 +7,6 @@ import com.atlassian.jira.config.ConstantsManager;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
-import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.spring.scanner.annotation.imports.JiraImport;
 import com.atlassian.reactiveplan.logic.IssueLogic;
@@ -16,7 +15,6 @@ import com.atlassian.templaterenderer.TemplateRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactiveplan.jiraconverter.JiraToReplanConverter;
-import reactiveplan.jiraconverter.ReplanToJiraConverter;
 import reactiveplan.jsonhandler.ReplanOptimizerRequest;
 
 import javax.servlet.*;
@@ -79,7 +77,7 @@ public class ReplanServlet extends HttpServlet{
            case "getProject":
 
 
-                projectIssues =  issLogic.getProjectIssues(authenticationContext.getLoggedInUser(),req.getParameter("project-key"));
+                projectIssues =  issLogic.getAllProjectIssues(authenticationContext.getLoggedInUser(),req.getParameter("project-key"));
                 context.put("issues",projectIssues);
                 templateRenderer.render(LIST_ISSUES_TEMPLATE, context, resp.getWriter());
                 break;
@@ -89,7 +87,7 @@ public class ReplanServlet extends HttpServlet{
                 String projectKey = req.getParameter("project-key");
                 issLogic = IssueLogic.getInstance(issueService,projectService,searchService);
                 ProjectLogic prlogic = ProjectLogic.getInstance(issueService,projectService,searchService);
-                projectIssues =  issLogic.getProjectIssues(authenticationContext.getLoggedInUser(),req.getParameter("project-key"));
+                projectIssues =  issLogic.getAllProjectIssues(authenticationContext.getLoggedInUser(),req.getParameter("project-key"));
                 context.put("issues",projectIssues);
 
                 Project pr = prlogic.getProjectByKey(projectKey);

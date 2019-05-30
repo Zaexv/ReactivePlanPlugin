@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import com.atlassian.jira.issue.link.IssueLink;
 import com.atlassian.jira.issue.link.LinkCollection;
+import com.atlassian.jira.issue.status.category.StatusCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,7 +122,7 @@ public class IssueLogic {
          return dependencies;
     }
 
-    public Collection<Issue> getProjectIssues (ApplicationUser user, String projectKey) {
+    public Collection<Issue> getAllProjectIssues(ApplicationUser user, String projectKey) {
 
         JqlClauseBuilder jqlClauseBuilder = JqlQueryBuilder.newClauseBuilder();
         Query query = jqlClauseBuilder.project(projectKey).buildQuery();
@@ -140,8 +141,54 @@ public class IssueLogic {
 
     public Collection<Issue> getOpenedProjectIssues(ApplicationUser user, String projectKey){
         //TODO hacer una función que sólo devuela los issues abiertos.
-        return null;
+        JqlClauseBuilder jqlClauseBuilder = JqlQueryBuilder.newClauseBuilder();
+        Query query = jqlClauseBuilder.project(projectKey).
+                and().statusCategory(StatusCategory.TO_DO).
+                buildQuery();
+
+        PagerFilter pagerFilter = PagerFilter.getUnlimitedFilter();
+        SearchResults searchResults = null;
+        try {
+            searchResults = searchService.search(user, query, pagerFilter);
+        } catch (SearchException e) {
+            e.printStackTrace();
+        }
+        return searchResults != null ? searchResults.getIssues() : null;
     }
+
+    public Collection<Issue> getProjectIssuesByVersion(ApplicationUser user, String projectKey, String version){
+        JqlClauseBuilder jqlClauseBuilder = JqlQueryBuilder.newClauseBuilder();
+        Query query = jqlClauseBuilder.project(projectKey).
+               and().fixVersion(version).
+                buildQuery();
+
+        PagerFilter pagerFilter = PagerFilter.getUnlimitedFilter();
+        SearchResults searchResults = null;
+        try {
+            searchResults = searchService.search(user, query, pagerFilter);
+        } catch (SearchException e) {
+            e.printStackTrace();
+        }
+        return searchResults != null ? searchResults.getIssues() : null;
+    }
+
+    public Collection<Issue> getOpenedProjectIssuesByVersion(ApplicationUser user, String projectKey, String version){
+        JqlClauseBuilder jqlClauseBuilder = JqlQueryBuilder.newClauseBuilder();
+        Query query = jqlClauseBuilder.project(projectKey).
+                and().statusCategory(StatusCategory.TO_DO).and().fixVersion(version).
+                buildQuery();
+
+        PagerFilter pagerFilter = PagerFilter.getUnlimitedFilter();
+        SearchResults searchResults = null;
+        try {
+            searchResults = searchService.search(user, query, pagerFilter);
+        } catch (SearchException e) {
+            e.printStackTrace();
+        }
+        return searchResults != null ? searchResults.getIssues() : null;
+    }
+
+
 
 
 
@@ -178,7 +225,7 @@ public class IssueLogic {
                 issueService.validateUpdate(user, issue.getId(), issueInputParameters);
 
         if (result.getErrorCollection().hasAnyErrors()) {
-           throw new Error(dueDate + " " + result.getErrorCollection().toString()); //TODO gestión de errores
+           throw new Error(result.getErrorCollection().toString()); //TODO gestión de errores
         } else {
             issueService.update(user, result); //TODO ver qué pasa cuando un issue se actualiza
         }

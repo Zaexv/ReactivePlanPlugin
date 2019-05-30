@@ -9,9 +9,7 @@ import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.roles.ProjectRole;
-import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.jira.util.json.JSONObject;
 import com.atlassian.plugin.spring.scanner.annotation.imports.JiraImport;
 import com.atlassian.reactiveplan.logic.IssueLogic;
 import com.atlassian.reactiveplan.logic.ProjectLogic;
@@ -91,6 +89,21 @@ public class TestServlet extends HttpServlet{
         //Test6:
         // testJiraToReplanConverter_getDefaultCalendar(resp);
 
+
+        //Test7:
+        //testReplanToJira_generalTest(req, resp, user);
+
+        //Test8
+
+        IssueLogic issueLogic = IssueLogic.getInstance(issueService,projectService,searchService);
+        resp.getWriter().write(issueLogic.getOpenedProjectIssues(user,"PDP").toString());
+        resp.getWriter().write(issueLogic.getProjectIssuesByVersion(user,"PDP","primera").toString());
+        resp.getWriter().write(issueLogic.getOpenedProjectIssuesByVersion(user,"PDP","primera").toString());
+
+
+    }
+
+    private void testReplanToJira_generalTest(HttpServletRequest req, HttpServletResponse resp, ApplicationUser user) throws IOException {
         HttpSession session = req.getSession();
         resp.getWriter().write(session.getAttribute("plan").toString());
         Gson gson = new Gson();
@@ -100,16 +113,12 @@ public class TestServlet extends HttpServlet{
 
         for(Employee e : response.getEmployees()) {
 
-           resp.getWriter().write(ReplanToJiraConverter.getIssueBeginDateFromCalendar(e.getCalendar(),"PDP-2", new Date()));
+            resp.getWriter().write(ReplanToJiraConverter.getIssueBeginDateFromCalendar(e.getCalendar(),"PDP-2", new Date()));
             resp.getWriter().write(ReplanToJiraConverter.getIssueEndDateFromCalendar(e.getCalendar(),"PDP-2", new Date()));
 
         }
         IssueLogic issueLogic = IssueLogic.getInstance(issueService,projectService,searchService);
         ReplanToJiraConverter.persistAllFeaturesToJira(user,response.getEmployees(),issueLogic, new Date());
-
-
-
-
     }
 
     private void testJiraToReplanConverter_getDefaultCalendar(HttpServletResponse resp) throws IOException {
@@ -152,7 +161,7 @@ public class TestServlet extends HttpServlet{
                     "</body></html>");
         }
 
-        Collection<Issue> issues = issueLogic.getProjectIssues(currentuser,"PDP");
+        Collection<Issue> issues = issueLogic.getAllProjectIssues(currentuser,"PDP");
         Collection<Feature> features = new ArrayList<>();
         for(Issue issue : issues){
             Feature f = JiraToReplanConverter.issueToFeature(issue,issueLogic.getIssueDependencies(issue));
@@ -179,7 +188,7 @@ public class TestServlet extends HttpServlet{
 
     private void testJiraToReplanConverter_issueToFeature(HttpServletResponse resp, ApplicationUser user) throws IOException {
         IssueLogic logic =  IssueLogic.getInstance(issueService,projectService,searchService);
-        Collection<Issue> issues =  logic.getProjectIssues(
+        Collection<Issue> issues =  logic.getAllProjectIssues(
             user,"PDP"
     );
 
@@ -269,7 +278,7 @@ public class TestServlet extends HttpServlet{
 
     private void testIssueLogic_getProjectIssues(HttpServletResponse resp, ApplicationUser user) throws IOException {
         IssueLogic issueLogic = IssueLogic.getInstance(issueService,projectService,searchService);
-        Collection<Issue> issues = issueLogic.getProjectIssues(user,"PDP");
+        Collection<Issue> issues = issueLogic.getAllProjectIssues(user,"PDP");
         resp.setContentType("text/html");
 
         for(Issue issue : issues) {
