@@ -7,6 +7,7 @@ import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.ConstantsManager;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.project.Project;
+import com.atlassian.jira.project.version.Version;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.user.ApplicationUser;
@@ -99,7 +100,7 @@ public class TestServlet extends HttpServlet{
         resp.getWriter().write(issueLogic.getOpenedProjectIssues(user,"PDP").toString());
         resp.getWriter().write(issueLogic.getProjectIssuesByVersion(user,"PDP","primera").toString());
         resp.getWriter().write(issueLogic.getOpenedProjectIssuesByVersion(user,"PDP","primera").toString());
-
+        resp.getWriter().write(JiraToReplanConverter.getCalendarFromVersion(8,(Version)issueLogic.getIssueByKey("PDP-1",user).getFixVersions().toArray()[0],5).toString());
 
     }
 

@@ -140,7 +140,7 @@ public class JiraToReplanConverter {
         return calendar;
     }
 
-    private static List<DaySlot> getCalendarFromVersion(double dailyHours, Version version, int numDays){
+    public static List<DaySlot> getCalendarFromVersion(double dailyHours, Version version, int numDays){
 
        Date startDate = version.getStartDate();
        Date releaseDate =  version.getReleaseDate();
