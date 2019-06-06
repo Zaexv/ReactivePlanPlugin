@@ -3,19 +3,24 @@ package com.atlassian.reactiveplan.servlet;
 import com.atlassian.jira.bc.issue.IssueService;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.bc.project.ProjectService;
+import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.ConstantsManager;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.project.Project;
+import com.atlassian.jira.project.version.Version;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.spring.scanner.annotation.imports.JiraImport;
 import com.atlassian.reactiveplan.logic.IssueLogic;
 import com.atlassian.reactiveplan.logic.ProjectLogic;
 import com.atlassian.templaterenderer.TemplateRenderer;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactiveplan.jiraconverter.JiraToReplanConverter;
+import reactiveplan.jiraconverter.ReplanToJiraConverter;
 import reactiveplan.jsonhandler.ReplanOptimizerRequest;
+import reactiveplan.jsonhandler.ReplanOptimizerResponse;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
@@ -31,6 +36,8 @@ public class ReplanServlet extends HttpServlet{
 
     private static final String MAIN_SCREEN = "/templates/replanMain.vm";
     private static final String LIST_ISSUES_TEMPLATE = "/templates/list.vm";
+    private static final String LIST_PLAN_TEMPLATE = "/templates/replanList.vm";
+
 
 
     @JiraImport
@@ -82,28 +89,85 @@ public class ReplanServlet extends HttpServlet{
                 templateRenderer.render(LIST_ISSUES_TEMPLATE, context, resp.getWriter());
                 break;
 
-            case "getProjectPlan":
+            case "getPlannedIssues":
 
+
+
+
+                
+
+
+
+
+
+
+                break;
+
+
+            case "getProjectPlan":
+                Gson gson = new Gson();
+                HttpSession session = req.getSession();
                 String projectKey = req.getParameter("project-key");
+                String versionKey = req.getParameter("version-key");
                 issLogic = IssueLogic.getInstance(issueService,projectService,searchService);
                 ProjectLogic prlogic = ProjectLogic.getInstance(issueService,projectService,searchService);
-                projectIssues =  issLogic.getAllProjectIssues(authenticationContext.getLoggedInUser(),req.getParameter("project-key"));
                 context.put("issues",projectIssues);
-
-                Project pr = prlogic.getProjectByKey(projectKey);
                 Set<ApplicationUser> userset = prlogic.getAllProjectUsers(projectKey);
+                Project pr = prlogic.getProjectByKey(projectKey);
+                if(versionKey.equals("")) { //Por defecto, planifica todos los issues en el proyecto.
 
-                ReplanOptimizerRequest replanRequest = new ReplanOptimizerRequest(JiraToReplanConverter.
-                        applicationUsersToEmployees(userset,prlogic,pr),
-                        JiraToReplanConverter.
-                                issuesToFeatures(projectIssues,issLogic));
-                String response = replanRequest.doRequest();
-                HttpSession session = req.getSession();
-                if(response == null){
-                    resp.getWriter().write("Error, no se ha podido hacer el plan :(");
-                } else {
-                    session.setAttribute("plan", response);
-                    resp.getWriter().write(response);
+                    projectIssues =  issLogic.getAllProjectIssues(authenticationContext.getLoggedInUser(),req.getParameter("project-key"));
+                    ReplanOptimizerRequest replanRequest = new ReplanOptimizerRequest(JiraToReplanConverter.
+                            applicationUsersToEmployees(userset, prlogic, pr),
+                            JiraToReplanConverter.
+                                    issuesToFeatures(projectIssues, issLogic));
+                    String response = replanRequest.doRequest();
+                    if (response == null) {
+                        resp.getWriter().write("Error, no se ha podido hacer el plan :(");
+                    } else {
+                        ReplanOptimizerResponse plan =
+                                gson.fromJson(session.getAttribute("plan").toString(), ReplanOptimizerResponse.class);
+
+                        session.setAttribute("plan", response);
+                        context.put("plan", plan);
+                        context.put("issues",projectIssues);
+                        //resp.getWriter().write(response);
+                        templateRenderer.render(LIST_PLAN_TEMPLATE, context, resp.getWriter());
+                    }
+                } else{
+                    Version version = pr.getVersions() //Sólo debería haber una versión
+                            .stream().filter(v -> v.getName().equals(versionKey)).findFirst().orElse(null);
+                    if( version != null){
+
+                        projectIssues =  issLogic.getOpenedProjectIssuesByVersion(authenticationContext.getLoggedInUser(),req.getParameter("project-key"), version.getName());
+                        ReplanOptimizerRequest replanRequest = new ReplanOptimizerRequest(JiraToReplanConverter.
+                                applicationUsersToEmployees(userset, prlogic, pr,version),
+                                JiraToReplanConverter.
+                                        issuesToFeatures(projectIssues, issLogic));
+                        String response = replanRequest.doRequest();
+                        if (response == null) {
+                            resp.getWriter().write("Error, no se ha podido hacer el plan :(");
+                        } else {
+                            ReplanOptimizerResponse plan =
+                                    gson.fromJson(response, ReplanOptimizerResponse.class);
+                            context.put("version", version);
+                            context.put("plan", plan);
+                            context.put("issues",projectIssues);
+                            session.setAttribute("plan", response);
+                            //resp.getWriter().write(response);
+                            templateRenderer.render(LIST_PLAN_TEMPLATE, context, resp.getWriter());
+                        }
+
+
+
+
+                    } else {
+                        resp.getWriter().write("Error, no se ha podido hacer el plan :(, la version con nombre " + versionKey +
+                                " no existe");
+                    }
+
+
+
                 }
                 break;
 
@@ -118,6 +182,13 @@ public class ReplanServlet extends HttpServlet{
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
+        ApplicationUser user = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser();
+        HttpSession session = req.getSession();
+        Gson gson = new Gson();
+        ReplanOptimizerResponse response =
+                gson.fromJson(session.getAttribute("plan").toString(), ReplanOptimizerResponse.class);
+        IssueLogic issueLogic = IssueLogic.getInstance(issueService,projectService,searchService);
+        ReplanToJiraConverter.persistAllFeaturesToJira(user,response.getEmployees(),issueLogic, new Date());
 
     }
 

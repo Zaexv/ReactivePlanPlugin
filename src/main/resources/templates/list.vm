@@ -84,6 +84,9 @@
                 </table>
             </div>
         #end
+
+
+
         <form method="get" action="issuecrud" class="aui">
             <input type="hidden" name="actionType" value="new">
             <input type="submit" class="button" value="Create new issue">

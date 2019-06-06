@@ -17,7 +17,7 @@ public class JiraToReplanConverter {
     public static Feature issueToFeature(Issue issue, Collection<Issue> issueDependencies){
 
         String name = issue.getKey();
-        Double duration = 1.0; //TODO CAMBIAR 
+        Double duration = 0.01; //Se asumirá una duración mínima de 1 segundo para que se puedan establecer los planes.
         if(issue.getOriginalEstimate() != null) {
             duration = (double) issue.getOriginalEstimate()/(3600);
         }
@@ -120,6 +120,22 @@ public class JiraToReplanConverter {
         }
         return employeeset;
     }
+
+    public static Set<Employee> applicationUsersToEmployees(Set<ApplicationUser> users, ProjectLogic prlogic, Project pr,
+                                                            Version version ){
+
+        Set<Employee> employeeset = new HashSet<>();
+
+        for(ApplicationUser appuser : users){
+            Employee e = JiraToReplanConverter.applicationUserToEmployee(appuser, prlogic.getRolesOfUserInProject(appuser,pr));
+
+            //TODO asignarle el calendario de una versión
+            e.setCalendar(JiraToReplanConverter.getCalendarFromVersion(8, version, 5));
+            employeeset.add(e);
+        }
+        return employeeset;
+    }
+
 
     public static List<DaySlot> getDefaultCalendar(double dailyHours, int numDays, int numWeeks){
         /*

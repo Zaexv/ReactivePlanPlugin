@@ -1,0 +1,75 @@
+<html>
+<head>
+    <title>My Plan</title>
+    <meta name="decorator" content="atl.general">
+</head>
+<body class="page-type-admin">
+<div class="content-container">
+
+
+    <div class="content-body">
+
+        <div class="content-body">
+            <h1>You've Got #if($issues.size()==0)<span style="color:red">NO</span>#end Issues! To be Planned</h1>
+
+
+           <!-- Gestión de errores  -->
+            #if ($issues.size() > 0)
+                <div class="issues">
+                    <table class="aui">
+                        <thead>
+                        <tr>
+                            <th>Key</th>
+                            <th>Summary</th>
+                            <th>Description</th>
+                            <th>Assignee</th>
+                            <th>Reporter</th>
+                            <th>Type</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            #foreach( $issue in $issues )
+                            <tr>
+                                <td>$issue.getKey()</td>
+                                <td>$issue.getSummary()</td>
+                                <td>
+                                    #if($issue.getDescription())
+                            $issue.getDescription()
+                        #end
+                                </td>
+                                <td>
+                                    $issue.getAssignee().getName()
+                                </td>
+                                <td>
+                                    $issue.getReporter().getName()
+                                </td>
+                                <td>
+                                    $issue.getIssueType().getName();
+                                </td>
+                                <td>
+                                    <a href="issuecrud?actionType=edit&key=$issue.getKey()">Edit</a>
+                                    <a href="#" class="delete-issue" data-key="$issue.getKey()">Delete</a>
+                                </td>
+                            </tr>
+                            #end
+                        </tbody>
+                    </table>
+                </div>
+            #end
+         <!-- Poner la versión y fecha de incio -->
+        #foreach( $employee in $plan.getEmployees())
+            $employee.getName()
+
+
+         #end
+
+
+        <form method="post" action="replanservlet" class="aui">
+            <input type="submit" class="button" value="Persist this plan">
+            <a href="replanservlet">Cancel</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

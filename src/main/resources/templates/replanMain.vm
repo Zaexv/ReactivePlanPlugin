@@ -20,9 +20,17 @@
                     </label>
                     <input id="h-fsummary" class="text long-field" type="text" name="project-key">
                 </div>
+                <div class="field-group">
+                    <label for="h-fsummary">
+                        Version Name
+                        <span class="aui-icon icon-required"></span>
+                        <span class="content">required</span>
+                    </label>
+                    <input id="h-fsummary" class="text long-field" type="text" name="version-key">
+                </div>
 
                 <div class="buttons">
-                    <input class="button" type="submit" value="Get My Project">
+                    <input class="button" type="submit" value="Use this Project">
                     <a href="replanservlet">Cancel</a>
                 </div>
 
