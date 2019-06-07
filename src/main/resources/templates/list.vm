@@ -1,33 +1,13 @@
 <html>
 <head>
-    <title>All Tutorial Issues — Issue CRUD Tutorial</title>
+    <title>Replan Plugin - Issues To Plan</title>
     <meta name="decorator" content="atl.general">
-    <script>
-        AJS.$(document).ready(function() {
-            jQuery('.delete-issue').click(function() {
-                console.log('deleting');
-                var self = jQuery(this);
-                jQuery.ajax({
-                    type: "delete",
-                    url: "issuecrud?key=" + self.data("key"),
-                    success: function(data) {
-                        console.log('dom', self, data);
-                        self.parent().parent().remove();
-                    },
-                    error: function() {
-                        console.log('error', arguments);
-                    }
-                });
-                return false;
-            });
-        });
-    </script>
 </head>
 <body class="page-type-admin">
 <div class="content-container">
 
     <div class="content-body">
-        <h1>You've Got #if($issues.size()==0)<span style="color:red">NO</span>#end Issues!</h1>
+        <h1>#if($issues.size()==0)<span style="color:red">$issues.size()</span>#end Issues Are Gonna Be Planned</h1>
 
         #if ($errors.size()>0)
             <div class="aui-message error shadowed">
@@ -40,13 +20,14 @@
             </div>
             <!-- .aui-message -->
         #end
+        <!-- Poner también los usuarios a planificar -->
 
         #if ($issues.size() > 0)
             <div class="issues">
-                <table class="aui">
+                <table class="aui aui-table-sortable">
                     <thead>
                     <tr>
-                        <th>Key</th>
+                        <th class="aui-table-column-issue-key">Issue-Key</th>
                         <th>Summary</th>
                         <th>Description</th>
                         <th>Assignee</th>
@@ -61,9 +42,14 @@
                             <td>$issue.getKey()</td>
                             <td>$issue.getSummary()</td>
                             <td>
+                                <details>
+                                    <summary>
+
+                                        Ver Descripción</summary>
                                 #if($issue.getDescription())
-                            $issue.getDescription()
-                        #end
+                                $issue.getDescription()
+                                #end
+                                </details>
                             </td>
                             <td>
                                 $issue.getAssignee().getName()
@@ -74,10 +60,7 @@
                             <td>
                                 $issue.getIssueType().getName();
                             </td>
-                            <td>
-                                <a href="issuecrud?actionType=edit&key=$issue.getKey()">Edit</a>
-                                <a href="#" class="delete-issue" data-key="$issue.getKey()">Delete</a>
-                            </td>
+
                         </tr>
                         #end
                     </tbody>
@@ -87,9 +70,9 @@
 
 
 
-        <form method="get" action="issuecrud" class="aui">
-            <input type="hidden" name="actionType" value="new">
-            <input type="submit" class="button" value="Create new issue">
+        <form method="get" action="replanservlet" class="aui">
+            <input type="hidden" name="actionType" value="getProjectPlan">
+            <input type="submit" class="button" value="Get Plan">
         </form>
     </div>
 </div>

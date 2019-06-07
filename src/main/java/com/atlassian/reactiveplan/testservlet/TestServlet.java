@@ -92,16 +92,22 @@ public class TestServlet extends HttpServlet{
 
 
         //Test7:
-        //testReplanToJira_generalTest(req, resp, user);
+        testReplanToJira_generalTest(req, resp, user);
 
         //Test8
 
+        //testAllIssueGetters(resp, user);
+
+
+
+    }
+
+    private void testAllIssueGetters(HttpServletResponse resp, ApplicationUser user) throws IOException {
         IssueLogic issueLogic = IssueLogic.getInstance(issueService,projectService,searchService);
         resp.getWriter().write(issueLogic.getOpenedProjectIssues(user,"PDP").toString());
         resp.getWriter().write(issueLogic.getProjectIssuesByVersion(user,"PDP","primera").toString());
         resp.getWriter().write(issueLogic.getOpenedProjectIssuesByVersion(user,"PDP","primera").toString());
         resp.getWriter().write(JiraToReplanConverter.getCalendarFromVersion(8,(Version)issueLogic.getIssueByKey("PDP-1",user).getFixVersions().toArray()[0],5).toString());
-
     }
 
     private void testReplanToJira_generalTest(HttpServletRequest req, HttpServletResponse resp, ApplicationUser user) throws IOException {
@@ -175,6 +181,7 @@ public class TestServlet extends HttpServlet{
         Gson gson = new Gson();
 
         String request = gson.toJson(ror);
+
 
         resp.getWriter().write(features.toString());
 

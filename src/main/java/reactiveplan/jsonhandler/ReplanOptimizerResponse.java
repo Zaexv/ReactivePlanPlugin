@@ -1,8 +1,13 @@
 package reactiveplan.jsonhandler;
 
+import reactiveplan.entities.DaySlot;
 import reactiveplan.entities.Employee;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ReplanOptimizerResponse {
     private double priorityQuality;
@@ -42,6 +47,27 @@ public class ReplanOptimizerResponse {
 
     public Set<Employee> getEmployees() {
         return employees;
+    }
+
+
+    //Todo test, aunque debería funcionar
+    public Set<String> getAllPlannedIssues(){
+        Set<String> plannedIssueKeys = new HashSet<>();
+
+        for(Employee e : employees){
+          List<DaySlot> plannedSlots =   e.getCalendar().stream()
+                    .filter(day -> day.getFeature() != null).
+                    filter(day-> plannedIssueKeys.contains(day.getFeature())).collect(Collectors.toList());
+            if(!plannedSlots.isEmpty()){
+                for(DaySlot day : plannedSlots){
+                    plannedIssueKeys.add(day.getFeature());
+                }
+            }
+
+        }
+
+
+        return plannedIssueKeys;
     }
 
     public String toString(){

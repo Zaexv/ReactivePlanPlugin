@@ -75,11 +75,27 @@ public class ReplanServlet extends HttpServlet{
     {
 
 
+
+        //Variables del método GET
+        /*Session*/
+        HttpSession session = req.getSession();
+        /* Request Parameters*/
         String action = Optional.ofNullable(req.getParameter("actionType")).orElse("");
-        Map<String,Object> context = new HashMap<>();
         resp.setContentType("text/html;charset=utf-8");
-        IssueLogic issLogic = IssueLogic.getInstance(issueService,projectService,searchService);
+
+        /*Initializing Data Structures */
         Collection<Issue> projectIssues = null;
+        Map<String,Object> context = new HashMap<>();
+        /*Initializing Logics*/
+        IssueLogic issLogic = IssueLogic.getInstance(issueService,projectService,searchService);
+        ProjectLogic prlogic = ProjectLogic.getInstance(issueService,projectService,searchService);
+
+        /*Obtaining Users & Project Objects */
+        Set<ApplicationUser> userset;
+        Project pr;
+
+        Gson gson = new Gson();
+
         switch(action){
            case "getProject":
 
@@ -89,34 +105,60 @@ public class ReplanServlet extends HttpServlet{
                 templateRenderer.render(LIST_ISSUES_TEMPLATE, context, resp.getWriter());
                 break;
 
-            case "getPlannedIssues":
+            case "getIssuesToPlan":
+                String projectKey = req.getParameter("project-key");
+                String versionKey = req.getParameter("version-key");
+                session.setAttribute("project-key", projectKey);
+                session.setAttribute("version-key", versionKey);
+                context.put("version-key", versionKey);
+                context.put("project-key",projectKey);
 
+                userset = prlogic.getAllProjectUsers(projectKey);
+                pr = prlogic.getProjectByKey(projectKey);
+                context.put("users",userset); //Quiero que también se vean los usuarios.
+                context.put("issues",projectIssues);
+                if(versionKey.equals("")) { //Por defecto, planifica todos los issues en el proyecto.
 
+                    projectIssues =  issLogic.getAllProjectIssues(authenticationContext.getLoggedInUser(),
+                            req.getParameter("project-key"));
 
+                        context.put("issues",projectIssues);
+                        //resp.getWriter().write(response);
+                        templateRenderer.render(LIST_ISSUES_TEMPLATE, context, resp.getWriter());
+                    }
+                 else{
+                    Version version = pr.getVersions() //Sólo debería haber una versión
+                            .stream().filter(v -> v.getName().equals(versionKey)).findFirst().orElse(null);
+                    if( version != null){
+                        projectIssues =  issLogic.getOpenedProjectIssuesByVersion(authenticationContext.getLoggedInUser(),req.getParameter("project-key"), version.getName());
 
-                
-
-
-
-
+                            context.put("version", version);
+                            context.put("issues",projectIssues);
+                            templateRenderer.render(LIST_ISSUES_TEMPLATE, context, resp.getWriter());
+                    } else {
+                        resp.getWriter().write("Error, no se ha podido hacer el plan :(, la version con nombre " + versionKey +
+                                " no existe");
+                    }
+                }
 
 
                 break;
 
 
             case "getProjectPlan":
-                Gson gson = new Gson();
-                HttpSession session = req.getSession();
-                String projectKey = req.getParameter("project-key");
-                String versionKey = req.getParameter("version-key");
-                issLogic = IssueLogic.getInstance(issueService,projectService,searchService);
-                ProjectLogic prlogic = ProjectLogic.getInstance(issueService,projectService,searchService);
+
+               projectKey = session.getAttribute("project-key").toString();
+               versionKey = session.getAttribute("version-key").toString();
+
+                userset = prlogic.getAllProjectUsers(projectKey);
+                pr = prlogic.getProjectByKey(projectKey);
                 context.put("issues",projectIssues);
-                Set<ApplicationUser> userset = prlogic.getAllProjectUsers(projectKey);
-                Project pr = prlogic.getProjectByKey(projectKey);
+
+
                 if(versionKey.equals("")) { //Por defecto, planifica todos los issues en el proyecto.
 
-                    projectIssues =  issLogic.getAllProjectIssues(authenticationContext.getLoggedInUser(),req.getParameter("project-key"));
+                    projectIssues =  issLogic.getAllProjectIssues(authenticationContext.getLoggedInUser(),
+                            req.getParameter(projectKey));
                     ReplanOptimizerRequest replanRequest = new ReplanOptimizerRequest(JiraToReplanConverter.
                             applicationUsersToEmployees(userset, prlogic, pr),
                             JiraToReplanConverter.
