@@ -17,6 +17,7 @@ import com.atlassian.templaterenderer.TemplateRenderer;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactiveplan.entities.Employee;
 import reactiveplan.jiraconverter.JiraToReplanConverter;
 import reactiveplan.jiraconverter.ReplanToJiraConverter;
 import reactiveplan.jsonhandler.ReplanOptimizerRequest;
@@ -85,6 +86,7 @@ public class ReplanServlet extends HttpServlet{
 
         /*Initializing Data Structures */
         Collection<Issue> projectIssues = null;
+        Set<Employee> employees = null;
         Map<String,Object> context = new HashMap<>();
         /*Initializing Logics*/
         IssueLogic issLogic = IssueLogic.getInstance(issueService,projectService,searchService);
@@ -112,28 +114,27 @@ public class ReplanServlet extends HttpServlet{
                 session.setAttribute("version-key", versionKey);
                 context.put("version-key", versionKey);
                 context.put("project-key",projectKey);
-
                 userset = prlogic.getAllProjectUsers(projectKey);
+
                 pr = prlogic.getProjectByKey(projectKey);
-                context.put("users",userset); //Quiero que también se vean los usuarios.
-                context.put("issues",projectIssues);
+                employees = JiraToReplanConverter.applicationUsersToEmployees(userset,prlogic,pr);
+                context.put("employees",employees);
+
                 if(versionKey.equals("")) { //Por defecto, planifica todos los issues en el proyecto.
 
                     projectIssues =  issLogic.getAllProjectIssues(authenticationContext.getLoggedInUser(),
                             req.getParameter("project-key"));
 
-                        context.put("issues",projectIssues);
-                        //resp.getWriter().write(response);
+                        context.put("features",JiraToReplanConverter.issuesToFeatures(projectIssues,issLogic));
                         templateRenderer.render(LIST_ISSUES_TEMPLATE, context, resp.getWriter());
                     }
                  else{
                     Version version = pr.getVersions() //Sólo debería haber una versión
                             .stream().filter(v -> v.getName().equals(versionKey)).findFirst().orElse(null);
                     if( version != null){
-                        projectIssues =  issLogic.getOpenedProjectIssuesByVersion(authenticationContext.getLoggedInUser(),req.getParameter("project-key"), version.getName());
-
+                        projectIssues =  issLogic.getOpenedProjectIssuesByVersion(authenticationContext.getLoggedInUser(),projectKey, version.getName());
                             context.put("version", version);
-                            context.put("issues",projectIssues);
+                            context.put("features",JiraToReplanConverter.issuesToFeatures(projectIssues,issLogic));
                             templateRenderer.render(LIST_ISSUES_TEMPLATE, context, resp.getWriter());
                     } else {
                         resp.getWriter().write("Error, no se ha podido hacer el plan :(, la version con nombre " + versionKey +
@@ -152,15 +153,14 @@ public class ReplanServlet extends HttpServlet{
 
                 userset = prlogic.getAllProjectUsers(projectKey);
                 pr = prlogic.getProjectByKey(projectKey);
-                context.put("issues",projectIssues);
-
+                employees = JiraToReplanConverter.applicationUsersToEmployees(userset, prlogic, pr);
 
                 if(versionKey.equals("")) { //Por defecto, planifica todos los issues en el proyecto.
 
                     projectIssues =  issLogic.getAllProjectIssues(authenticationContext.getLoggedInUser(),
-                            req.getParameter(projectKey));
-                    ReplanOptimizerRequest replanRequest = new ReplanOptimizerRequest(JiraToReplanConverter.
-                            applicationUsersToEmployees(userset, prlogic, pr),
+                            projectKey);
+
+                    ReplanOptimizerRequest replanRequest = new ReplanOptimizerRequest(employees,
                             JiraToReplanConverter.
                                     issuesToFeatures(projectIssues, issLogic));
                     String response = replanRequest.doRequest();
@@ -168,7 +168,7 @@ public class ReplanServlet extends HttpServlet{
                         resp.getWriter().write("Error, no se ha podido hacer el plan :(");
                     } else {
                         ReplanOptimizerResponse plan =
-                                gson.fromJson(session.getAttribute("plan").toString(), ReplanOptimizerResponse.class);
+                                gson.fromJson(response, ReplanOptimizerResponse.class);
 
                         session.setAttribute("plan", response);
                         context.put("plan", plan);
@@ -181,9 +181,8 @@ public class ReplanServlet extends HttpServlet{
                             .stream().filter(v -> v.getName().equals(versionKey)).findFirst().orElse(null);
                     if( version != null){
 
-                        projectIssues =  issLogic.getOpenedProjectIssuesByVersion(authenticationContext.getLoggedInUser(),req.getParameter("project-key"), version.getName());
-                        ReplanOptimizerRequest replanRequest = new ReplanOptimizerRequest(JiraToReplanConverter.
-                                applicationUsersToEmployees(userset, prlogic, pr,version),
+                        projectIssues =  issLogic.getOpenedProjectIssuesByVersion(authenticationContext.getLoggedInUser(),projectKey, version.getName());
+                        ReplanOptimizerRequest replanRequest = new ReplanOptimizerRequest(employees,
                                 JiraToReplanConverter.
                                         issuesToFeatures(projectIssues, issLogic));
                         String response = replanRequest.doRequest();

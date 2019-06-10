@@ -1,3 +1,5 @@
+$webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-table-sortable")
+
 <html>
 <head>
     <title>Replan Plugin - Issues To Plan</title>
@@ -7,9 +9,35 @@
 <div class="content-container">
 
     <div class="content-body">
-        <h1>#if($issues.size()==0)<span style="color:red">$issues.size()</span>#end Issues Are Gonna Be Planned</h1>
+        #if ($version)
+            <h2>Version: $version.getName()</h2>
+            <table class ="aui">
+                <thead>
+                <tr>
+                    <th>
+                        Start Date
+                    </th>
+                    <th>
+                        End Date
+                    </th>
+                </tr>
+                </thead>
 
-        #if ($errors.size()>0)
+                <tr>
+                    <td>
+                        $version.getStartDate()
+                    </td>
+                    <td> $version.getReleaseDate()</td>
+                </tr>
+
+
+            </table>
+        #end
+
+
+        <h2>Issues to Plan: #if($features.size() > 0)<span style="color:red">$features.size()</span>#end</h2>
+
+        #if ($errors.size() > 0)
             <div class="aui-message error shadowed">
                 #foreach($error in $errors)
                     <p class="title">
@@ -22,44 +50,44 @@
         #end
         <!-- Poner también los usuarios a planificar -->
 
-        #if ($issues.size() > 0)
+        #if ($features.size() > 0)
             <div class="issues">
                 <table class="aui aui-table-sortable">
                     <thead>
                     <tr>
                         <th class="aui-table-column-issue-key">Issue-Key</th>
-                        <th>Summary</th>
-                        <th>Description</th>
-                        <th>Assignee</th>
-                        <th>Reporter</th>
-                        <th>Type</th>
-                        <th></th>
+                        <th>Duration (hours)</th>
+                        <th>Priority Level</th>
+                        <th>Required Skills</th>
+                        <th>Depends On</th>
                     </tr>
                     </thead>
                     <tbody>
-                        #foreach( $issue in $issues )
+                        #foreach( $feature in $features)
                         <tr>
-                            <td>$issue.getKey()</td>
-                            <td>$issue.getSummary()</td>
+                            <td><a href ="/jira/browse/$feature.getName()">$feature.getName() </a></td>
+                            <td>$feature.getDuration() </td>
+                            <td>$feature.getPriority().getLevel()</td>
                             <td>
-                                <details>
-                                    <summary>
-
-                                        Ver Descripción</summary>
-                                #if($issue.getDescription())
-                                $issue.getDescription()
+                                #if($feature.getRequiredSkills().size() > 0)
+                                    #foreach($skill in $feature.getRequiredSkills())
+                                        $skill.getName()
+                                        <br/>
+                                    #end
+                                #else
+                                    No skills required
                                 #end
-                                </details>
                             </td>
                             <td>
-                                $issue.getAssignee().getName()
+                                #if ($feature.getPreviousFeatures.size() > 0)
+                                    #foreach($prevf in $feature.getPreviousFeatures())
+                                        $prevf.getName()
+                                    #end
+                                #else
+                                    No dependencies
+                                #end
                             </td>
-                            <td>
-                                $issue.getReporter().getName()
-                            </td>
-                            <td>
-                                $issue.getIssueType().getName();
-                            </td>
+
 
                         </tr>
                         #end
@@ -69,6 +97,37 @@
         #end
 
 
+        <h2>Workers To plan:  #if($employees.size() > 0)<span style="color:red">$employees.size()</span>#end</h2>
+
+<div class="employees">
+        <table class="aui aui-table-sortable">
+            <thead>
+            <tr>
+                <th>Worker</th>
+                <th>Skills</th>
+
+            </tr>
+            </thead>
+            <tbody>
+                #foreach( $employee in $employees)
+                <tr>
+                    <td>
+                        <a href="/jira/secure/ViewProfile.jspa?name=$employee.getName()">
+                            $employee.getName()
+                        </a>
+                    </td>
+                    <td>
+                        #foreach($skill in $employee.getSkills())
+                        $skill.getName()
+                        <br/>
+                        #end
+
+                    </td>
+                </tr>
+                #end
+            </tbody>
+        </table>
+    </div>
 
         <form method="get" action="replanservlet" class="aui">
             <input type="hidden" name="actionType" value="getProjectPlan">
@@ -77,4 +136,4 @@
     </div>
 </div>
 </body>
-</html><
+</html>

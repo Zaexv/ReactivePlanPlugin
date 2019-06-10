@@ -72,4 +72,15 @@ public class ReplanToJiraConverter {
                     }
                 }
             }
+
+            public static String daySlotToDate(Date startDate, DaySlot daySlot  ){
+                Calendar c = Calendar.getInstance();
+                c.setTime(startDate);
+                c.add(Calendar.WEEK_OF_YEAR, daySlot.getWeek());
+                c.add(Calendar.DATE, daySlot.getDayOfWeek());
+
+                SimpleDateFormat sdf = new SimpleDateFormat("d/MMM/yy");
+
+                return sdf.format(new Date(c.getTimeInMillis())).toLowerCase();
+            }
 }

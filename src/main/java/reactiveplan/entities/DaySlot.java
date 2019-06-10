@@ -1,4 +1,9 @@
 package reactiveplan.entities;
+
+import reactiveplan.jiraconverter.ReplanToJiraConverter;
+
+import java.util.Date;
+
 public class DaySlot implements Comparable<DaySlot> {
 
 
@@ -90,6 +95,10 @@ public class DaySlot implements Comparable<DaySlot> {
     public String toString() {
         return "[SLOT] week: " + week + " | day: " + dayOfWeek + " | beginHour: " + beginHour
                 + " | endHour: " + endHour + " | status: " + status;
+    }
+
+    public String getDate(Date startDate){
+        return ReplanToJiraConverter.daySlotToDate(startDate,this);
     }
 
     public double getTime() {

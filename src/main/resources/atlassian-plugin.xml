@@ -12,7 +12,7 @@
   <resource type="i18n" name="i18n" location="ReactivePlanPlugin"/>  
   <!-- add our web resources -->  
   <web-resource key="ReactivePlanPlugin-resources" name="ReactivePlanPlugin Web Resources"> 
-    <dependency>com.atlassian.auiplugin:ajs</dependency>  
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
     <resource type="download" name="ReactivePlanPlugin.css" location="/css/ReactivePlanPlugin.css"/>  
     <resource type="download" name="ReactivePlanPlugin.js" location="/js/ReactivePlanPlugin.js"/>  
     <resource type="download" name="images/" location="/images"/>  
@@ -35,4 +35,7 @@
     <description key="replan-servlet.description">The Replan Servlet Plugin</description>  
     <url-pattern>/replanservlet</url-pattern> 
   </servlet>
+
+
+
 </atlassian-plugin>
