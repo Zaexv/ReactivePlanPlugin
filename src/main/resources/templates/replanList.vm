@@ -1,3 +1,5 @@
+$webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs")
+
 <html>
 <head>
     <title>My Plan</title>
@@ -10,11 +12,64 @@
     <div class="content-body">
 
         <div class="content-body">
-        $version.getName()
+
+            #if($version)
+                Plan for Version: $version.getName()
+                $version.getStartDate()
+                $version.getReleaseDate()
+            #else
+
+            Plan for project: $request.getSession().getAttribute("project-key")
+            #end
+
+
+            <!-- Poner aquí el diagrama de Gantt. -->
+
+            <div class="aui-tabs horizontal-tabs">
+                <ul class="tabs-menu">
 
             #foreach($employee in $plan.getEmployees() )
-                
-            #end
+
+                <li class="menu-item active-tab">
+                    <a href="#$employee.getName()">$employee.getName()</a>
+                </li>
+                    #end
+                </ul>
+
+
+                #foreach($employee in $plan.getEmployees() )
+                <div class="tabs-pane active-pane" id="$employee.getName()">
+                    <table class ="aui">
+                        <thead>
+                            <tr>
+                            #foreach($dayslot in $employee.getCalendar())
+                                        <th>
+                                        $dayslot.getDate($version.getStartDate())
+                                        </th>
+                            #end
+                            </tr>
+                        </thead>
+                    <tbody>
+                            <tr>
+                        #foreach($dayslot in $employee.getCalendar())
+                            <td>
+                         #if($dayslot.getFeature())
+                            $dayslot.getFeature()
+                             </td>
+                        #end
+                        #end
+                            </tr>
+                    </tbody>
+                </div>
+                #end
+
+
+
+
+
+
+            </div>
+
         $plan.toString()
 
         <form method="post" action="replanservlet" class="aui">

@@ -93,12 +93,23 @@ public class DaySlot implements Comparable<DaySlot> {
 
     @Override
     public String toString() {
+        if(this.getFeature() != null) {
+
         return "[SLOT] week: " + week + " | day: " + dayOfWeek + " | beginHour: " + beginHour
-                + " | endHour: " + endHour + " | status: " + status;
+                + " | endHour: " + endHour + " | status: " + status + " | Feature: " + this.getFeature();
+
+        } else {
+            return "[SLOT] week: " + week + " | day: " + dayOfWeek + " | beginHour: " + beginHour
+                    + " | endHour: " + endHour + " | status: " + status;
+        }
     }
 
     public String getDate(Date startDate){
-        return ReplanToJiraConverter.daySlotToDate(startDate,this);
+        if(startDate != null){
+            return ReplanToJiraConverter.daySlotToDate(startDate,this);
+        } else{
+            return ReplanToJiraConverter.daySlotToDate(new Date(), this);
+        }
     }
 
     public double getTime() {

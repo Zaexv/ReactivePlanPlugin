@@ -153,10 +153,10 @@ public class ReplanServlet extends HttpServlet{
 
                 userset = prlogic.getAllProjectUsers(projectKey);
                 pr = prlogic.getProjectByKey(projectKey);
-                employees = JiraToReplanConverter.applicationUsersToEmployees(userset, prlogic, pr);
+
 
                 if(versionKey.equals("")) { //Por defecto, planifica todos los issues en el proyecto.
-
+                    employees = JiraToReplanConverter.applicationUsersToEmployees(userset, prlogic, pr);
                     projectIssues =  issLogic.getAllProjectIssues(authenticationContext.getLoggedInUser(),
                             projectKey);
 
@@ -180,7 +180,7 @@ public class ReplanServlet extends HttpServlet{
                     Version version = pr.getVersions() //Sólo debería haber una versión
                             .stream().filter(v -> v.getName().equals(versionKey)).findFirst().orElse(null);
                     if( version != null){
-
+                        employees = JiraToReplanConverter.applicationUsersToEmployees(userset, prlogic, pr,version);
                         projectIssues =  issLogic.getOpenedProjectIssuesByVersion(authenticationContext.getLoggedInUser(),projectKey, version.getName());
                         ReplanOptimizerRequest replanRequest = new ReplanOptimizerRequest(employees,
                                 JiraToReplanConverter.

@@ -2,6 +2,7 @@ package reactiveplan.entities;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -30,8 +31,7 @@ public class Employee {
 	public void setSkills(List<Skill> skills) {
 		this.skills = skills;
 	}
-
-	public List<DaySlot> getCalendar() { return calendar; }
+	public List<DaySlot> getCalendar() { return calendar;}
 	public void setCalendar(List<DaySlot> calendar) { this.calendar = calendar; }
 
 	/* --- CONSTRUCTORS --- */
