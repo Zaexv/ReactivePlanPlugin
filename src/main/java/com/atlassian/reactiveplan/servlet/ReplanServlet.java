@@ -17,6 +17,7 @@ import com.atlassian.templaterenderer.TemplateRenderer;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactiveplan.entities.DaySlot;
 import reactiveplan.entities.Employee;
 import reactiveplan.jiraconverter.JiraToReplanConverter;
 import reactiveplan.jiraconverter.ReplanToJiraConverter;
@@ -163,6 +164,7 @@ public class ReplanServlet extends HttpServlet{
                     ReplanOptimizerRequest replanRequest = new ReplanOptimizerRequest(employees,
                             JiraToReplanConverter.
                                     issuesToFeatures(projectIssues, issLogic));
+                    context.put("calendar",getCalendar(replanRequest));
                     String response = replanRequest.doRequest();
                     if (response == null) {
                         resp.getWriter().write("Error, no se ha podido hacer el plan :(");
@@ -185,6 +187,9 @@ public class ReplanServlet extends HttpServlet{
                         ReplanOptimizerRequest replanRequest = new ReplanOptimizerRequest(employees,
                                 JiraToReplanConverter.
                                         issuesToFeatures(projectIssues, issLogic));
+
+                        context.put("calendar",getCalendar(replanRequest));
+
                         String response = replanRequest.doRequest();
                         if (response == null) {
                             resp.getWriter().write("Error, no se ha podido hacer el plan :(");
@@ -219,6 +224,13 @@ public class ReplanServlet extends HttpServlet{
 
         }
     }
+
+    private List<DaySlot> getCalendar(ReplanOptimizerRequest request){
+
+        //Cojo el primer calendario que haya.
+        return request.getEmployeesRequest().iterator().next().getCalendar();
+    }
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException

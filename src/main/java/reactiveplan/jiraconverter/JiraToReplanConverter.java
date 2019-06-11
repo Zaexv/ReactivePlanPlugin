@@ -17,7 +17,7 @@ public class JiraToReplanConverter {
     public static Feature issueToFeature(Issue issue, Collection<Issue> issueDependencies){
 
         String name = issue.getKey();
-        Double duration = 0.50; //Se asumirá una duración mínima de mediahorapara que se puedan establecer los planes.
+        Double duration = 0.50; //Se asumirá una duración mínima de media hora para que se puedan establecer los planes.
         if(issue.getOriginalEstimate() != null) {
             duration = (double) issue.getOriginalEstimate()/(3600);
         }

@@ -19,7 +19,7 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
                 $version.getReleaseDate()
             #else
 
-            Plan for project: $request.getSession().getAttribute("project-key")
+            Plan for the whole project
             #end
 
 
@@ -28,50 +28,132 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
             <div class="aui-tabs horizontal-tabs">
                 <ul class="tabs-menu">
 
+
+                    <li class="menu-item">
+                        <a href="#all">All</a>
+                    </li>
+
             #foreach($employee in $plan.getEmployees() )
 
-                <li class="menu-item active-tab">
+                <li class="menu-item">
                     <a href="#$employee.getName()">$employee.getName()</a>
                 </li>
                     #end
                 </ul>
 
+                <div class="tabs-pane" id="all">
 
+                    <!-- TODO Planificación de todos los usuarios -->
+
+
+                    <table class ="aui">
+                        <thead>
+
+                        <tr>
+                            <th>
+                            Employee
+                            </th>
+                            #foreach($dayslot in $calendar)
+                            <th>
+
+                                $dayslot.getDate($version.getStartDate())
+                            </th>
+                            #end
+                             </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                        #foreach($employee in $plan.getEmployees())
+
+                        <tr>
+
+                            <td><b>$employee.getName()</b></td>
+
+
+                            #foreach($dayslot in $employee.getCalendar())
+
+                                #if($dayslot.equals($prevday))
+
+
+                                    #if($dayslot.getFeature())
+                                        <br/>
+                                        $dayslot.getFeature()
+
+
+                                    #end
+
+                                #else
+
+                                    #if($dayslot.getFeature())
+                                    <td bgcolor="#F2F5A9">
+                                        $dayslot.getFeature()
+                                    #else
+                                    <td>
+                                        Free Day Slot
+                                    #end
+                                #end
+                                #set ($prevday = $dayslot)
+                            #end
+                        </tr>
+                        #end
+                        </tbody>
+                    </table>
+                </div>
                 #foreach($employee in $plan.getEmployees() )
-                <div class="tabs-pane active-pane" id="$employee.getName()">
+                <div class="tabs-pane" id="$employee.getName()">
                     <table class ="aui">
                         <thead>
                             <tr>
                             #foreach($dayslot in $employee.getCalendar())
+                                #if($dayslot.equals($prevday))
+
+                                    #else
                                         <th>
                                         $dayslot.getDate($version.getStartDate())
                                         </th>
+                                #end
+                                #set ($prevday = $dayslot)
+
                             #end
                             </tr>
                         </thead>
                     <tbody>
                             <tr>
                         #foreach($dayslot in $employee.getCalendar())
-                            <td>
-                         #if($dayslot.getFeature())
-                            $dayslot.getFeature()
-                             </td>
-                        #end
+
+                            #if($dayslot.equals($prevday))
+
+
+                                #if($dayslot.getFeature())
+                                    <br/>
+                                    $dayslot.getFeature()
+
+
+                                #end
+
+                                #else
+
+                                 #if($dayslot.getFeature())
+                                 <td bgcolor="#F2F5A9">
+                                 $dayslot.getFeature()
+                                 #else
+                                 <td>
+                                     Free Day Slot
+                                 #end
+
+
+                            #end
+                            #set ($prevday = $dayslot)
                         #end
                             </tr>
                     </tbody>
+                    </table>
                 </div>
                 #end
-
-
-
-
-
-
             </div>
-
-        $plan.toString()
-
         <form method="post" action="replanservlet" class="aui">
             <input type="submit" class="button" value="Persist this plan">
             <a href="replanservlet">Cancel</a>
