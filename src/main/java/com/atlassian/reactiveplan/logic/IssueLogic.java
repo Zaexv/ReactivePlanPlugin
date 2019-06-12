@@ -218,7 +218,7 @@ public class IssueLogic {
         MutableIssue issue = issueService.getIssue(user, issueKey).getIssue();
         IssueInputParameters issueInputParameters = issueService.newIssueInputParameters();
         if(dueDate != null) issueInputParameters.setDueDate(dueDate);
-        if(beginDate != null)  issueInputParameters.setDescription(issue.getDescription().concat(String.valueOf(beginDate)));
+        if(issue.getDescription() != null && beginDate != null)  issueInputParameters.setDescription(issue.getDescription().concat(String.valueOf(beginDate)));
         if(assigneeID != null) issueInputParameters.setAssigneeId(assigneeID);
 
         IssueService.UpdateValidationResult result =

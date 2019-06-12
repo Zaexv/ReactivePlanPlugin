@@ -1,7 +1,9 @@
 package reactiveplan.jsonhandler;
 
+import com.atlassian.jira.issue.Issue;
 import reactiveplan.entities.DaySlot;
 import reactiveplan.entities.Employee;
+import reactiveplan.entities.Feature;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,7 +28,6 @@ public class ReplanOptimizerResponse {
 
     }
 
-    //TODO añadir métodos xd
 
 
     public double getPriorityQuality() {
@@ -51,13 +52,13 @@ public class ReplanOptimizerResponse {
 
 
     //Todo test, aunque debería funcionar
-    public Set<String> getAllPlannedIssues(){
+    public Set<String> getAllPlannedFeatures(){
         Set<String> plannedIssueKeys = new HashSet<>();
 
         for(Employee e : employees){
           List<DaySlot> plannedSlots =   e.getCalendar().stream()
                     .filter(day -> day.getFeature() != null).
-                    filter(day-> plannedIssueKeys.contains(day.getFeature())).collect(Collectors.toList());
+                    filter(day-> !plannedIssueKeys.contains(day.getFeature())).collect(Collectors.toList());
             if(!plannedSlots.isEmpty()){
                 for(DaySlot day : plannedSlots){
                     plannedIssueKeys.add(day.getFeature());
@@ -69,6 +70,15 @@ public class ReplanOptimizerResponse {
 
         return plannedIssueKeys;
     }
+
+    public Collection<Feature> getUnplannedFeatures(Collection<Feature> featuresToPlan){
+
+        return featuresToPlan
+                .stream().filter(feature -> !getAllPlannedFeatures().contains(feature.getName()))
+                .collect(Collectors.toList());
+    }
+
+
 
     public String toString(){
         StringBuilder sb = new StringBuilder();

@@ -174,7 +174,7 @@ public class ReplanServlet extends HttpServlet{
 
                         session.setAttribute("plan", response);
                         context.put("plan", plan);
-                        context.put("issues",projectIssues);
+                        context.put("unplannedfeatures", plan.getUnplannedFeatures(replanRequest.getFeatureRequest()));
                         //resp.getWriter().write(response);
                         templateRenderer.render(LIST_PLAN_TEMPLATE, context, resp.getWriter());
                     }
@@ -198,14 +198,11 @@ public class ReplanServlet extends HttpServlet{
                                     gson.fromJson(response, ReplanOptimizerResponse.class);
                             context.put("version", version);
                             context.put("plan", plan);
-                            context.put("issues",projectIssues);
+                            context.put("unplannedfeatures", plan.getUnplannedFeatures(replanRequest.getFeatureRequest()));
                             session.setAttribute("plan", response);
                             //resp.getWriter().write(response);
                             templateRenderer.render(LIST_PLAN_TEMPLATE, context, resp.getWriter());
                         }
-
-
-
 
                     } else {
                         resp.getWriter().write("Error, no se ha podido hacer el plan :(, la version con nombre " + versionKey +

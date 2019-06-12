@@ -40,13 +40,13 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
 
             #foreach($employee in $plan.getEmployees() )
 
-                <li class="menu-item">
+                <li class="menu-item active-tab">
                     <a href="#$employee.getName()">$employee.getName()</a>
                 </li>
                     #end
                 </ul>
 
-                <div class="tabs-pane" id="all">
+                <div class="tabs-pane active-pane" id="all">
 
                     <!-- TODO Planificación de todos los usuarios -->
 
@@ -165,6 +165,63 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
                 #end
             </div>
 
+
+
+            #if ($unplannedfeatures.size() > 0)
+
+            <div class="aui-message aui-message-warning">
+                <p>Couldn't plan $unplannedfeatures.size() features</p>
+                <div class="issues">
+                    <table class="aui aui-table-sortable">
+                        <thead>
+                        <tr>
+                            <th class="aui-table-column-issue-key">Issue-Key</th>
+                            <th>Duration (hours)</th>
+                            <th>Priority Level</th>
+                            <th>Required Skills</th>
+                            <th>Depends On</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            #foreach( $feature in $unplannedfeatures)
+                            <tr>
+                                <td><a href ="/jira/browse/$feature.getName()">$feature.getName() </a></td>
+                                <td>$feature.getDuration() </td>
+                                <td>$feature.getPriority().getLevel()</td>
+                                <td>
+                                    #if($feature.getRequiredSkills().size() > 0)
+                                        #foreach($skill in $feature.getRequiredSkills())
+                                            $skill.getName()
+                                            <br/>
+                                        #end
+                                    #else
+                                        No skills required
+                                    #end
+                                </td>
+                                <td>
+                                    #if ($feature.getPreviousFeatures.size() > 0)
+                                        #foreach($prevf in $feature.getPreviousFeatures())
+                                            $prevf.getName()
+                                        #end
+                                    #else
+                                        No dependencies
+                                    #end
+                                </td>
+
+
+                            </tr>
+                            #end
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            #end
+
+
+
+
+
+
             <form method="post" action="replanservlet" class="aui">
             <input type="submit" class="aui-button aui-button-primary" value="Persist this plan">
             <a href="replanservlet">Cancel</a>
@@ -173,7 +230,9 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
                 <input type="hidden" name="actionType" value="getProjectPlan">
                 <input type="submit" class="button" value="Get Other Plan">
             </form>
-    </div>
+
+
+        </div>
 </div>
 </body>
 </html>

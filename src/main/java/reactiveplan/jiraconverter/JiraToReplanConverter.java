@@ -176,21 +176,25 @@ public class JiraToReplanConverter {
         *   _skills_ skill1 skill2 skill3 endskills
         *
         * */
+        StringTokenizer st = new StringTokenizer("");
 
-        StringTokenizer st = new StringTokenizer(issue.getDescription());
+        if(issue.getDescription() != null){
+             st = new StringTokenizer(issue.getDescription());
+        }
+
+
         List<Skill> skillslist = new ArrayList<>();
-        String token = st.nextToken();
+        String token =" ";
         boolean skills = false;
         while(st.hasMoreTokens() && !token.equals("endskills")){
+            token = st.nextToken();
             if(skills){
                skillslist.add(new Skill(token));
            }
             if(token.equalsIgnoreCase("_skills_")){
                 skills = true;
             }
-            token = st.nextToken();
         }
-
         return skillslist;
     }
 
