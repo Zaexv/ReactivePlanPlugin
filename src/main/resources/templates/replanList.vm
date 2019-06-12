@@ -4,6 +4,11 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
 <head>
     <title>My Plan</title>
     <meta name="decorator" content="atl.general">
+
+    <style>
+        .search-table-outter { overflow-x: scroll; }
+        th, td { min-width: 100px; }
+    </style>
 </head>
 <body class="page-type-admin">
 <div class="content-container">
@@ -45,7 +50,7 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
 
                     <!-- TODO Planificación de todos los usuarios -->
 
-
+                    <div class="search-table-outter">
                     <table class ="aui">
                         <thead>
 
@@ -70,9 +75,11 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
 
                         <tr>
 
-                            <td><b>$employee.getName()</b></td>
-
-
+                            <td><b>
+                                <a href="/jira/secure/ViewProfile.jspa?name=$employee.getName()">
+                                $employee.getName()
+                                    </a>
+                            </b></td>
                             #foreach($dayslot in $employee.getCalendar())
 
                                 #if($dayslot.equals($prevday))
@@ -80,16 +87,14 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
 
                                     #if($dayslot.getFeature())
                                         <br/>
-                                        $dayslot.getFeature()
-
-
+                                        <a href ="/jira/browse/$dayslot.getFeature()">$dayslot.getFeature() </a>
                                     #end
 
                                 #else
 
                                     #if($dayslot.getFeature())
                                     <td bgcolor="#F2F5A9">
-                                        $dayslot.getFeature()
+                                    <a href ="/jira/browse/$dayslot.getFeature()">$dayslot.getFeature() </a>
                                     #else
                                     <td>
                                         Free Day Slot
@@ -101,9 +106,13 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
                         #end
                         </tbody>
                     </table>
+                    </div>
                 </div>
                 #foreach($employee in $plan.getEmployees() )
                 <div class="tabs-pane" id="$employee.getName()">
+
+
+                    <div class="search-table-outter">
                     <table class ="aui">
                         <thead>
                             <tr>
@@ -129,7 +138,7 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
 
                                 #if($dayslot.getFeature())
                                     <br/>
-                                    $dayslot.getFeature()
+                                    <a href ="/jira/browse/$dayslot.getFeature()">$dayslot.getFeature() </a>
 
 
                                 #end
@@ -138,7 +147,7 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
 
                                  #if($dayslot.getFeature())
                                  <td bgcolor="#F2F5A9">
-                                 $dayslot.getFeature()
+                                 <a href ="/jira/browse/$dayslot.getFeature()">$dayslot.getFeature() </a>
                                  #else
                                  <td>
                                      Free Day Slot
@@ -151,13 +160,19 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
                             </tr>
                     </tbody>
                     </table>
+                    </div>
                 </div>
                 #end
             </div>
-        <form method="post" action="replanservlet" class="aui">
-            <input type="submit" class="button" value="Persist this plan">
+
+            <form method="post" action="replanservlet" class="aui">
+            <input type="submit" class="aui-button aui-button-primary" value="Persist this plan">
             <a href="replanservlet">Cancel</a>
-        </form>
+            </form>
+            <form method="get" action="replanservlet" class="aui">
+                <input type="hidden" name="actionType" value="getProjectPlan">
+                <input type="submit" class="button" value="Get Other Plan">
+            </form>
     </div>
 </div>
 </body>

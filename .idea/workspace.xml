@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00e01fe1-3940-4893-9a13-594259452f4f" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/atlassian/reactiveplan/servlet/ReplanServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/atlassian/reactiveplan/servlet/ReplanServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/reactiveplan/entities/DaySlot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/reactiveplan/entities/DaySlot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/reactiveplan/jiraconverter/JiraToReplanConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/reactiveplan/jiraconverter/JiraToReplanConverter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/replanList.vm" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/replanList.vm" afterDir="false" />
     </list>
     <ignored path="ReactivePlanPlugin.iws" />
@@ -30,7 +27,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/atlassian/reactiveplan/servlet/ReplanServlet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
+            <state relative-caret-position="-10">
               <caret line="166" column="71" lean-forward="true" selection-start-line="166" selection-start-column="71" selection-end-line="166" selection-end-column="71" />
             </state>
           </provider>
@@ -48,8 +45,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/templates/list.vm">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-469">
-              <caret line="54" column="54" lean-forward="true" selection-start-line="54" selection-start-column="54" selection-end-line="54" selection-end-column="54" />
+            <state relative-caret-position="-4">
+              <caret line="85" column="37" lean-forward="true" selection-start-line="85" selection-start-column="37" selection-end-line="85" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -66,8 +63,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/resources/templates/replanList.vm">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="21" column="38" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
+            <state relative-caret-position="691">
+              <caret line="173" column="50" selection-start-line="173" selection-start-column="50" selection-end-line="173" selection-end-column="50" />
             </state>
           </provider>
         </entry>
@@ -142,7 +139,6 @@
       <find>replanRequest</find>
       <find>a href</find>
       <find>aui</find>
-      <find>table</find>
       <find>skills</find>
       <find>version</find>
       <find>getCalendar</find>
@@ -152,6 +148,7 @@
       <find>getcalendar</find>
       <find>private</find>
       <find>request</find>
+      <find>table</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -590,7 +587,7 @@
       <workItem from="1559236095654" duration="3086000" />
       <workItem from="1559725946029" duration="7203000" />
       <workItem from="1559842083810" duration="16328000" />
-      <workItem from="1560251638135" duration="16443000" />
+      <workItem from="1560251638135" duration="18649000" />
     </task>
     <task id="LOCAL-00001" summary="Primer Commit">
       <created>1557502940626</created>
@@ -603,7 +600,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="131494000" />
+    <option name="totallyTimeSpent" value="133700000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1920" height="1020" extended-state="6" />
@@ -978,6 +975,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/reactiveplan/entities/Schedule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="21" lean-forward="true" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/reactiveplan/jsonhandler/ReplanOptimizerRequest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-4">
@@ -987,29 +991,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/atlassian/reactiveplan/servlet/ReplanServlet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
+        <state relative-caret-position="-10">
           <caret line="166" column="71" lean-forward="true" selection-start-line="166" selection-start-column="71" selection-end-line="166" selection-end-column="71" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/templates/list.vm">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-469">
-          <caret line="54" column="54" lean-forward="true" selection-start-line="54" selection-start-column="54" selection-end-line="54" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/reactiveplan/entities/Schedule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="21" lean-forward="true" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
+        <state relative-caret-position="-4">
+          <caret line="85" column="37" lean-forward="true" selection-start-line="85" selection-start-column="37" selection-end-line="85" selection-end-column="37" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/templates/replanList.vm">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="21" column="38" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
+        <state relative-caret-position="691">
+          <caret line="173" column="50" selection-start-line="173" selection-start-column="50" selection-end-line="173" selection-end-column="50" />
         </state>
       </provider>
     </entry>
