@@ -107,8 +107,12 @@ public class DaySlot implements Comparable<DaySlot> {
     public boolean equals(DaySlot day){
         return this.dayOfWeek == day.getDayOfWeek() && this.getWeek() == day.getWeek();
     }
+
     public String getDate(Date startDate){
         if(startDate != null){
+            if(startDate.compareTo(new Date()) < 0 ){
+                startDate = new Date();
+            }
             return ReplanToJiraConverter.daySlotToDate(startDate,this);
         } else{
             return ReplanToJiraConverter.daySlotToDate(new Date(), this);

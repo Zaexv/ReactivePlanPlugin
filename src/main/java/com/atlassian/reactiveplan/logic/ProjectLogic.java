@@ -52,6 +52,10 @@ public class ProjectLogic {
         return ComponentAccessor.getProjectManager().getProjectByCurrentKey(projectKey);
     }
 
+    public List<Project> getAllProjects(){
+        return ComponentAccessor.getProjectManager().getProjects();
+    }
+
     public List<Project> getProjectLeadBy(ApplicationUser user){
         return ComponentAccessor.getProjectManager().getProjectsLeadBy(user);
     }
@@ -88,24 +92,22 @@ public class ProjectLogic {
         return userset;
     }
 
-    public Collection<Version> getUnReleasedProjectVersions(Project project){
-        return null;
 
-                // project.getVersions().stream().filter(version -> !version.isReleased()).collect(Collectors.toCollection());
+    public Set<Version> getAllVersions(){
+        Set<Version> versions = new HashSet<>();
+
+        for(Project pr : getAllProjects()){
+            versions.addAll(pr.getVersions());
+
+        }
+        return versions;
     }
 
-    public Version getProjectVersionByName(String version ,Project project){
+    public Version getProjectVersionByName(String version, Project project){
 
         return project.getVersions().stream().filter(versionObject -> versionObject.getName().equalsIgnoreCase(version)).findFirst().get();
 
     }
-
-    public void addVersionToProject(){
-        //https://docs.atlassian.com/software/jira/docs/api/8.1.0/com/atlassian/jira/project/version/VersionManager.html
-    }
-
-
-
 
 
 

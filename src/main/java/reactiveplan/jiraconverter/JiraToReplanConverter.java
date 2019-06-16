@@ -158,12 +158,20 @@ public class JiraToReplanConverter {
 
     public static List<DaySlot> getCalendarFromVersion(double dailyHours, Version version, int numDays){
 
-       Date startDate = version.getStartDate();
+
+       if(version.isReleased()) throw new Error ("Can't plan released versions!");
+
+       Date startDate =  version.getStartDate();
+       if(startDate.compareTo(new Date()) < 0 ){
+           startDate = new Date();
+       }
        Date releaseDate =  version.getReleaseDate();
 
        Long timeBetweenDates = releaseDate.getTime() - startDate.getTime();
 
-       Double totalnumberdays = (double)timeBetweenDates/(24*3600*1000); //TODO debuggear
+       if(timeBetweenDates < 0) throw new Error("Version is Obsolete"); //TODO añadir excepciones
+
+       Double totalnumberdays = (double)timeBetweenDates/(24*3600*1000);
 
         int numWeeks = (int)(totalnumberdays/numDays);
 
@@ -181,8 +189,6 @@ public class JiraToReplanConverter {
         if(issue.getDescription() != null){
              st = new StringTokenizer(issue.getDescription());
         }
-
-
         List<Skill> skillslist = new ArrayList<>();
         String token =" ";
         boolean skills = false;

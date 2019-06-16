@@ -18,17 +18,32 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
 
         <div class="content-body">
 
+            #if ($success)
+                <div class="aui-message aui-message-success">
+                    <p class="title">
+                        <strong>Success!</strong>
+                    </p>
+                    <p>Plan has been succesfully persisted.</p>
+                </div>
+                #else
+
+
+            #end
+
             #if($version)
                 Plan for Version: $version.getName()
                 $version.getStartDate()
                 $version.getReleaseDate()
             #else
+            #if($success)
 
-            Plan for the whole project
+                #else
+                Plan for the whole project
+                #end
+
             #end
 
-
-            <!-- Poner aquí el diagrama de Gantt. -->
+            <!--Diagrama de Gantt. -->
 
             <div class="aui-tabs horizontal-tabs">
                 <ul class="tabs-menu">
@@ -218,18 +233,19 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
             #end
 
 
+            #if($success)
+                <a href="replanservlet">Back To Replan</a>
+                #else
+                    <form method="post" action="replanservlet" class="aui">
+                        <input type="submit" class="aui-button aui-button-primary" value="Persist this plan">
+                        <a href="replanservlet">Cancel</a>
+                    </form>
+                    <form method="get" action="replanservlet" class="aui">
+                        <input type="hidden" name="actionType" value="getProjectPlan">
+                        <input type="submit" class="button" value="Get Other Plan">
+                    </form>
+            #end
 
-
-
-
-            <form method="post" action="replanservlet" class="aui">
-            <input type="submit" class="aui-button aui-button-primary" value="Persist this plan">
-            <a href="replanservlet">Cancel</a>
-            </form>
-            <form method="get" action="replanservlet" class="aui">
-                <input type="hidden" name="actionType" value="getProjectPlan">
-                <input type="submit" class="button" value="Get Other Plan">
-            </form>
 
 
         </div>

@@ -203,7 +203,6 @@ public class ReplanServlet extends HttpServlet{
                             //resp.getWriter().write(response);
                             templateRenderer.render(LIST_PLAN_TEMPLATE, context, resp.getWriter());
                         }
-
                     } else {
                         resp.getWriter().write("Error, no se ha podido hacer el plan :(, la version con nombre " + versionKey +
                                 " no existe");
@@ -215,7 +214,8 @@ public class ReplanServlet extends HttpServlet{
                 break;
 
             default:
-
+                context.put("projects",prlogic.getAllProjects());
+                context.put("versions",prlogic.getAllVersions());
                 templateRenderer.render(MAIN_SCREEN, context, resp.getWriter());
                 break;
 
@@ -223,7 +223,6 @@ public class ReplanServlet extends HttpServlet{
     }
 
     private List<DaySlot> getCalendar(ReplanOptimizerRequest request){
-
         //Cojo el primer calendario que haya.
         return request.getEmployeesRequest().iterator().next().getCalendar();
     }
@@ -232,13 +231,38 @@ public class ReplanServlet extends HttpServlet{
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
+
+        ProjectLogic prlogic = ProjectLogic.getInstance(issueService,projectService,searchService);
+        Map<String,Object> context = new HashMap<>();
         ApplicationUser user = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser();
         HttpSession session = req.getSession();
+        String projectKey = session.getAttribute("project-key").toString();
+        String versionKey = session.getAttribute("version-key").toString();
+
+        Project pr = prlogic.getProjectByKey(projectKey);
+        Version ver = pr.getVersions() //Sólo debería haber una versión
+                .stream().filter(v -> v.getName().equals(versionKey)).findFirst().orElse(null);
+
         Gson gson = new Gson();
         ReplanOptimizerResponse response =
                 gson.fromJson(session.getAttribute("plan").toString(), ReplanOptimizerResponse.class);
         IssueLogic issueLogic = IssueLogic.getInstance(issueService,projectService,searchService);
         ReplanToJiraConverter.persistAllFeaturesToJira(user,response.getEmployees(),issueLogic, new Date());
+
+
+        if (ver != null){
+            context.put("version",ver);
+            context.put("calendar",JiraToReplanConverter.getCalendarFromVersion(8.0,ver,5));
+        } else {
+
+            //Añado el calendario con los valores por defecto de planificaciones a 4 semanas.
+            context.put("calendar",JiraToReplanConverter.getDefaultCalendar(8.0,5,4));
+        }
+
+        context.put("plan", response);
+        context.put("success",true);
+        templateRenderer.render(LIST_PLAN_TEMPLATE, context, resp.getWriter());
+
 
     }
 
