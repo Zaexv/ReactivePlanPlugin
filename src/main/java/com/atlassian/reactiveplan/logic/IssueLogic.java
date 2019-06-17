@@ -173,6 +173,7 @@ public class IssueLogic {
     }
 
     public Collection<Issue> getOpenedProjectIssuesByVersion(ApplicationUser user, String projectKey, String version){
+
         JqlClauseBuilder jqlClauseBuilder = JqlQueryBuilder.newClauseBuilder();
         Query query = jqlClauseBuilder.project(projectKey).
                 and().statusCategory(StatusCategory.TO_DO).and().fixVersion(version).

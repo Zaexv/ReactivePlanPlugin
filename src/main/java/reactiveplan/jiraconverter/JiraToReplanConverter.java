@@ -6,6 +6,7 @@ import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.version.Version;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.reactiveplan.exception.ReplanException;
 import com.atlassian.reactiveplan.logic.IssueLogic;
 import com.atlassian.reactiveplan.logic.ProjectLogic;
 import reactiveplan.entities.*;
@@ -122,14 +123,16 @@ public class JiraToReplanConverter {
     }
 
     public static Set<Employee> applicationUsersToEmployees(Set<ApplicationUser> users, ProjectLogic prlogic, Project pr,
-                                                            Version version ){
+                                                            Version version ) throws ReplanException {
+
+        if(version == null)
+            throw new ReplanException("Version not found!");
+
 
         Set<Employee> employeeset = new HashSet<>();
 
         for(ApplicationUser appuser : users){
             Employee e = JiraToReplanConverter.applicationUserToEmployee(appuser, prlogic.getRolesOfUserInProject(appuser,pr));
-
-            //TODO asignarle el calendario de una versión
             e.setCalendar(JiraToReplanConverter.getCalendarFromVersion(8, version, 5));
             employeeset.add(e);
         }
@@ -156,10 +159,13 @@ public class JiraToReplanConverter {
         return calendar;
     }
 
-    public static List<DaySlot> getCalendarFromVersion(double dailyHours, Version version, int numDays){
+    public static List<DaySlot> getCalendarFromVersion(double dailyHours, Version version, int numDays)
+            throws ReplanException {
 
 
-       if(version.isReleased()) throw new Error ("Can't plan released versions!");
+        if(version == null)
+            throw new ReplanException("Version not found!");
+
 
        Date startDate =  version.getStartDate();
        if(startDate.compareTo(new Date()) < 0 ){
@@ -169,7 +175,9 @@ public class JiraToReplanConverter {
 
        Long timeBetweenDates = releaseDate.getTime() - startDate.getTime();
 
-       if(timeBetweenDates < 0) throw new Error("Version is Obsolete"); //TODO añadir excepciones
+
+       if(version.isReleased()) throw new ReplanException("Can't plan released versions!");
+       if(timeBetweenDates < 0) throw new ReplanException("Version is Obsolete");
 
        Double totalnumberdays = (double)timeBetweenDates/(24*3600*1000);
 

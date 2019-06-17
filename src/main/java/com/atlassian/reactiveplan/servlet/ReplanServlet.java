@@ -11,6 +11,7 @@ import com.atlassian.jira.project.version.Version;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.spring.scanner.annotation.imports.JiraImport;
+import com.atlassian.reactiveplan.exception.ReplanException;
 import com.atlassian.reactiveplan.logic.IssueLogic;
 import com.atlassian.reactiveplan.logic.ProjectLogic;
 import com.atlassian.templaterenderer.TemplateRenderer;
@@ -30,6 +31,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
 
 public class ReplanServlet extends HttpServlet{
@@ -75,9 +78,6 @@ public class ReplanServlet extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-
-
-
         //Variables del método GET
         /*Session*/
         HttpSession session = req.getSession();
@@ -85,7 +85,7 @@ public class ReplanServlet extends HttpServlet{
         String action = Optional.ofNullable(req.getParameter("actionType")).orElse("");
         resp.setContentType("text/html;charset=utf-8");
 
-        /*Initializing Data Structures */
+        /*Initializing Data Structures*/
         Collection<Issue> projectIssues = null;
         Set<Employee> employees = null;
         Map<String,Object> context = new HashMap<>();
@@ -96,13 +96,11 @@ public class ReplanServlet extends HttpServlet{
         /*Obtaining Users & Project Objects */
         Set<ApplicationUser> userset;
         Project pr;
-
         Gson gson = new Gson();
 
+        try {
         switch(action){
            case "getProject":
-
-
                 projectIssues =  issLogic.getAllProjectIssues(authenticationContext.getLoggedInUser(),req.getParameter("project-key"));
                 context.put("issues",projectIssues);
                 templateRenderer.render(LIST_ISSUES_TEMPLATE, context, resp.getWriter());
@@ -115,35 +113,48 @@ public class ReplanServlet extends HttpServlet{
                 session.setAttribute("version-key", versionKey);
                 context.put("version-key", versionKey);
                 context.put("project-key",projectKey);
-                userset = prlogic.getAllProjectUsers(projectKey);
+
+
+                if(projectKey == null )
+                    throw new ReplanException("Project do not exist. Please enter a valid project name");
+                if(versionKey == null )
+                    throw new ReplanException("Version do not exist. Plase enter a valid version name.");
+
 
                 pr = prlogic.getProjectByKey(projectKey);
+                userset = prlogic.getAllProjectUsers(projectKey);
                 employees = JiraToReplanConverter.applicationUsersToEmployees(userset,prlogic,pr);
                 context.put("employees",employees);
 
-                if(versionKey.equals("")) { //Por defecto, planifica todos los issues en el proyecto.
+
+
+                if(versionKey.equals("Total Project")) { //Por defecto, planifica todos los issues en el proyecto.
+
+
 
                     projectIssues =  issLogic.getAllProjectIssues(authenticationContext.getLoggedInUser(),
                             req.getParameter("project-key"));
 
                         context.put("features",JiraToReplanConverter.issuesToFeatures(projectIssues,issLogic));
                         templateRenderer.render(LIST_ISSUES_TEMPLATE, context, resp.getWriter());
-                    }
+                }
                  else{
+
                     Version version = pr.getVersions() //Sólo debería haber una versión
                             .stream().filter(v -> v.getName().equals(versionKey)).findFirst().orElse(null);
-                    if( version != null){
+
+                    if(version != null){
                         projectIssues =  issLogic.getOpenedProjectIssuesByVersion(authenticationContext.getLoggedInUser(),projectKey, version.getName());
                             context.put("version", version);
                             context.put("features",JiraToReplanConverter.issuesToFeatures(projectIssues,issLogic));
                             templateRenderer.render(LIST_ISSUES_TEMPLATE, context, resp.getWriter());
                     } else {
-                        resp.getWriter().write("Error, no se ha podido hacer el plan :(, la version con nombre " + versionKey +
-                                " no existe");
+                        context.put("error", new ReplanException("Version with name " + versionKey +  " do not exists."));
+                        context.put("projects", prlogic.getAllProjects());
+                        context.put("versions", prlogic.getAllVersions());
+                        templateRenderer.render(MAIN_SCREEN, context, resp.getWriter());
                     }
                 }
-
-
                 break;
 
 
@@ -156,7 +167,7 @@ public class ReplanServlet extends HttpServlet{
                 pr = prlogic.getProjectByKey(projectKey);
 
 
-                if(versionKey.equals("")) { //Por defecto, planifica todos los issues en el proyecto.
+                if(versionKey.equals("") || versionKey.equals("Total Project")) { //Si se selecciona total project, planifica todo el proyecto.
                     employees = JiraToReplanConverter.applicationUsersToEmployees(userset, prlogic, pr);
                     projectIssues =  issLogic.getAllProjectIssues(authenticationContext.getLoggedInUser(),
                             projectKey);
@@ -167,15 +178,17 @@ public class ReplanServlet extends HttpServlet{
                     context.put("calendar",getCalendar(replanRequest));
                     String response = replanRequest.doRequest();
                     if (response == null) {
-                        resp.getWriter().write("Error, no se ha podido hacer el plan :(");
+                        context.put("projects", prlogic.getAllProjects());
+                        context.put("versions", prlogic.getAllVersions());
+                        context.put("error", new ReplanException("Can't connect to server. Can't make plan."));
+                        templateRenderer.render(MAIN_SCREEN, context, resp.getWriter());
+
                     } else {
                         ReplanOptimizerResponse plan =
                                 gson.fromJson(response, ReplanOptimizerResponse.class);
-
                         session.setAttribute("plan", response);
                         context.put("plan", plan);
                         context.put("unplannedfeatures", plan.getUnplannedFeatures(replanRequest.getFeatureRequest()));
-                        //resp.getWriter().write(response);
                         templateRenderer.render(LIST_PLAN_TEMPLATE, context, resp.getWriter());
                     }
                 } else{
@@ -220,6 +233,20 @@ public class ReplanServlet extends HttpServlet{
                 break;
 
         }
+        } catch (Exception e){
+
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            String sStackTrace = sw.toString(); // stack trace as a string
+            System.out.println(sStackTrace);
+
+                    context.put("error", e);
+                    context.put("projects", prlogic.getAllProjects());
+                    context.put("versions", prlogic.getAllVersions());
+                    templateRenderer.render(MAIN_SCREEN, context, resp.getWriter());
+
+        }
     }
 
     private List<DaySlot> getCalendar(ReplanOptimizerRequest request){
@@ -231,14 +258,13 @@ public class ReplanServlet extends HttpServlet{
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-
         ProjectLogic prlogic = ProjectLogic.getInstance(issueService,projectService,searchService);
         Map<String,Object> context = new HashMap<>();
         ApplicationUser user = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser();
         HttpSession session = req.getSession();
         String projectKey = session.getAttribute("project-key").toString();
         String versionKey = session.getAttribute("version-key").toString();
-
+        try{
         Project pr = prlogic.getProjectByKey(projectKey);
         Version ver = pr.getVersions() //Sólo debería haber una versión
                 .stream().filter(v -> v.getName().equals(versionKey)).findFirst().orElse(null);
@@ -262,6 +288,15 @@ public class ReplanServlet extends HttpServlet{
         context.put("plan", response);
         context.put("success",true);
         templateRenderer.render(LIST_PLAN_TEMPLATE, context, resp.getWriter());
+
+        }
+        catch (Exception e ){
+
+            context.put("projects",prlogic.getAllProjects());
+            context.put("versions",prlogic.getAllVersions());
+            context.put("error", e);
+            templateRenderer.render(MAIN_SCREEN, context, resp.getWriter());
+    }
 
 
     }

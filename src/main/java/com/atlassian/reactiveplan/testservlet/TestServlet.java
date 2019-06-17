@@ -12,6 +12,7 @@ import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.spring.scanner.annotation.imports.JiraImport;
+import com.atlassian.reactiveplan.exception.ReplanException;
 import com.atlassian.reactiveplan.logic.IssueLogic;
 import com.atlassian.reactiveplan.logic.ProjectLogic;
 import com.atlassian.templaterenderer.TemplateRenderer;
@@ -90,9 +91,8 @@ public class TestServlet extends HttpServlet{
         //Test6:
         // testJiraToReplanConverter_getDefaultCalendar(resp);
 
-
         //Test7:
-        testReplanToJira_generalTest(req, resp, user);
+        //testReplanToJira_generalTest(req, resp, user);
 
         //Test8
 
@@ -107,7 +107,11 @@ public class TestServlet extends HttpServlet{
         resp.getWriter().write(issueLogic.getOpenedProjectIssues(user,"PDP").toString());
         resp.getWriter().write(issueLogic.getProjectIssuesByVersion(user,"PDP","primera").toString());
         resp.getWriter().write(issueLogic.getOpenedProjectIssuesByVersion(user,"PDP","primera").toString());
-        resp.getWriter().write(JiraToReplanConverter.getCalendarFromVersion(8,(Version)issueLogic.getIssueByKey("PDP-1",user).getFixVersions().toArray()[0],5).toString());
+        try {
+            resp.getWriter().write(JiraToReplanConverter.getCalendarFromVersion(8,(Version)issueLogic.getIssueByKey("PDP-1",user).getFixVersions().toArray()[0],5).toString());
+        } catch (ReplanException e) {
+            e.printStackTrace();
+        }
     }
 
     private void testReplanToJira_generalTest(HttpServletRequest req, HttpServletResponse resp, ApplicationUser user) throws IOException {
@@ -128,7 +132,7 @@ public class TestServlet extends HttpServlet{
         ReplanToJiraConverter.persistAllFeaturesToJira(user,response.getEmployees(),issueLogic, new Date());
     }
 
-    private void testJiraToReplanConverter_getDefaultCalendar(HttpServletResponse resp) throws IOException {
+    private void testJiraToReplanConverter_getDefaultCalendar(HttpServletResponse resp) throws IOException, ReplanException {
         ProjectLogic prlogic = ProjectLogic.getInstance(issueService,projectService,searchService);
         Project pr =  prlogic.getProjectByKey("PDP");
         IssueLogic issueLogic = IssueLogic.getInstance(issueService,projectService,searchService);
@@ -223,7 +227,7 @@ public class TestServlet extends HttpServlet{
         }
     }
 
-    private void testProjectLogic_getProjectUsersWithRole(HttpServletResponse resp) throws IOException {
+    private void testProjectLogic_getProjectUsersWithRole(HttpServletResponse resp) throws IOException, ReplanException {
         ProjectLogic prlogic = ProjectLogic.getInstance(issueService,projectService,searchService);
         Project pr =  prlogic.getProjectByKey("PDP");
         resp.setContentType("text/html");

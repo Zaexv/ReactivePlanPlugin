@@ -11,6 +11,7 @@ import com.atlassian.jira.security.roles.ProjectRoleActors;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.security.roles.RoleActor;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.reactiveplan.exception.ReplanException;
 import jdk.nashorn.internal.objects.annotations.Constructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +49,16 @@ public class ProjectLogic {
         return logic;
     }
 
-    public Project getProjectByKey(String projectKey){
-        return ComponentAccessor.getProjectManager().getProjectByCurrentKey(projectKey);
+    public Project getProjectByKey(String projectKey) throws ReplanException {
+
+        try {
+
+            return ComponentAccessor.getProjectManager().getProjectByCurrentKey(projectKey) ;
+        }
+         catch (Exception e){
+             throw new ReplanException("Project with Key " + projectKey +  " do not exists.");
+         }
+
     }
 
     public List<Project> getAllProjects(){
@@ -76,13 +85,16 @@ public class ProjectLogic {
         return userRoles;
     }
 
-    public Set<ApplicationUser> getProjectUsersWithRole(ProjectRole role, Project project){
+    public Set<ApplicationUser> getProjectUsersWithRole(ProjectRole role, Project project) throws ReplanException {
+
+        if(project == null ) throw new ReplanException ("Project not found. Please enter a valid Project Key");
+
         ProjectRoleManager pRoleManager =  ComponentAccessor.getComponent(ProjectRoleManager.class);
        ProjectRoleActors pra = pRoleManager.getProjectRoleActors(role,project);
        return pra.getApplicationUsers();
     }
 
-    public Set<ApplicationUser> getAllProjectUsers(String projectKey){
+    public Set<ApplicationUser> getAllProjectUsers(String projectKey) throws ReplanException {
         Project pr = this.getProjectByKey(projectKey);
         Set<ApplicationUser> userset = new HashSet<>();
         for(ProjectRole role : this.getProjectRoles()){
