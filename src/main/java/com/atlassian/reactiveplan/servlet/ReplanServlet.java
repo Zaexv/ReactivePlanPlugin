@@ -196,7 +196,7 @@ public class ReplanServlet extends HttpServlet{
                     Version version = pr.getVersions() //Sólo debería haber una versión
                             .stream().filter(v -> v.getName().equals(versionKey)).findFirst().orElse(null);
                     if( version != null){
-                        employees = JiraToReplanConverter.applicationUsersToEmployees(userset, prlogic, pr,version);
+                        employees = JiraToReplanConverter.applicationUsersToEmployees(userset, prlogic,pr ,version);
                         projectIssues =  issLogic.getOpenedProjectIssuesByVersion(authenticationContext.getLoggedInUser(),projectKey, version.getName());
                         ReplanOptimizerRequest replanRequest = new ReplanOptimizerRequest(employees,
                                 JiraToReplanConverter.
@@ -282,7 +282,7 @@ public class ReplanServlet extends HttpServlet{
             context.put("calendar",JiraToReplanConverter.getCalendarFromVersion(8.0,ver,5));
         } else {
 
-            //Añado el calendario con los valores por defecto de planificaciones a 4 semanas.
+            /*Añado el calendario con los valores por defecto de planificaciones a 4 semanas. */
             context.put("calendar",JiraToReplanConverter.getDefaultCalendar(8.0,5,4));
         }
 

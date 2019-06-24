@@ -62,7 +62,7 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-sele
             </p>
                 <br>
 
-                <input class="button" type="submit" value="Start Planning">
+                <input class="aui-button aui-button-primary" type="submit" value="Start Planning">
                 <a href="replanservlet">Cancel</a>
             </div>
 

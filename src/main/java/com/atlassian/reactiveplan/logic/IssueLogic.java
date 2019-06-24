@@ -213,22 +213,18 @@ public class IssueLogic {
 
     public void handleIssueEdit(ApplicationUser user, String issueKey, String dueDate, String beginDate, String assigneeID) {
 
-
-
-      //  Map<String, Object> context = new HashMap<>();
         MutableIssue issue = issueService.getIssue(user, issueKey).getIssue();
         IssueInputParameters issueInputParameters = issueService.newIssueInputParameters();
         if(dueDate != null) issueInputParameters.setDueDate(dueDate);
-        if(issue.getDescription() != null && beginDate != null)  issueInputParameters.setDescription(issue.getDescription().concat(String.valueOf(beginDate)));
         if(assigneeID != null) issueInputParameters.setAssigneeId(assigneeID);
 
         IssueService.UpdateValidationResult result =
                 issueService.validateUpdate(user, issue.getId(), issueInputParameters);
 
         if (result.getErrorCollection().hasAnyErrors()) {
-           throw new Error(result.getErrorCollection().toString()); //TODO gestión de errores
+           throw new Error(result.getErrorCollection().toString());
         } else {
-            issueService.update(user, result); //TODO ver qué pasa cuando un issue se actualiza
+            issueService.update(user, result);
         }
     }
 

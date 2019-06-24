@@ -30,7 +30,6 @@ public class ReplanToJiraConverter {
             }
             
             public static String getIssueEndDateFromCalendar(List<DaySlot> calendar, String issueKey, Date versionStartDate ) {
-                //TODO test
                 Calendar c = Calendar.getInstance();
                 c.setTime(versionStartDate);
 

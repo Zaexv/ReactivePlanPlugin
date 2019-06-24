@@ -98,8 +98,6 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
                             #foreach($dayslot in $employee.getCalendar())
 
                                 #if($dayslot.equals($prevday))
-
-
                                     #if($dayslot.getFeature())
                                         <br/>
                                         <a href ="/jira/browse/$dayslot.getFeature()">$dayslot.getFeature() </a>
@@ -108,11 +106,10 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
                                 #else
 
                                     #if($dayslot.getFeature())
-                                    <td bgcolor="#F2F5A9">
+                                    <td>
                                     <a href ="/jira/browse/$dayslot.getFeature()">$dayslot.getFeature() </a>
                                     #else
                                     <td>
-                                        Free Day Slot
                                     #end
                                 #end
                                 #set ($prevday = $dayslot)
@@ -161,11 +158,10 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
                                 #else
 
                                  #if($dayslot.getFeature())
-                                 <td bgcolor="#F2F5A9">
+                                 <td>
                                  <a href ="/jira/browse/$dayslot.getFeature()">$dayslot.getFeature() </a>
                                  #else
                                  <td>
-                                     Free Day Slot
                                  #end
 
 
@@ -214,9 +210,10 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabs
                                     #end
                                 </td>
                                 <td>
-                                    #if ($feature.getPreviousFeatures.size() > 0)
+                                    #if ($feature.getPreviousFeatures().size() > 0)
                                         #foreach($prevf in $feature.getPreviousFeatures())
                                             $prevf.getName()
+                                            <br/>
                                         #end
                                     #else
                                         No dependencies

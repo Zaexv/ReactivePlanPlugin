@@ -172,7 +172,6 @@ public class JiraToReplanConverter {
            startDate = new Date();
        }
        Date releaseDate =  version.getReleaseDate();
-
        Long timeBetweenDates = releaseDate.getTime() - startDate.getTime();
 
 
@@ -180,8 +179,12 @@ public class JiraToReplanConverter {
        if(timeBetweenDates < 0) throw new ReplanException("Version is Obsolete");
 
        Double totalnumberdays = (double)timeBetweenDates/(24*3600*1000);
-
         int numWeeks = (int)(totalnumberdays/numDays);
+
+        if(numWeeks == 0){
+            numWeeks = 1;
+
+        }
 
         return getDefaultCalendar(dailyHours, numDays, numWeeks);
     }

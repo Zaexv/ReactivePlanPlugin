@@ -79,7 +79,7 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabl
                                 #end
                             </td>
                             <td>
-                                #if ($feature.getPreviousFeatures.size() > 0)
+                                #if ($feature.getPreviousFeatures().size() > 0)
                                     #foreach($prevf in $feature.getPreviousFeatures())
                                         $prevf.getName()
                                     #end
@@ -131,7 +131,7 @@ $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-tabl
 
         <form method="get" action="replanservlet" class="aui">
             <input type="hidden" name="actionType" value="getProjectPlan">
-            <input type="submit" class="button" value="Get Plan">
+            <input type="submit" class="aui-button aui-button-primary" value="Get Plan">
         </form>
     </div>
 </div>
