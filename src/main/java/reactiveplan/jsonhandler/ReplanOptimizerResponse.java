@@ -51,8 +51,7 @@ public class ReplanOptimizerResponse {
     }
 
 
-    //Todo test, aunque debería funcionar
-    public Set<String> getAllPlannedFeatures(){
+    public Set<String> getPlannedFeatures(){
         Set<String> plannedIssueKeys = new HashSet<>();
 
         for(Employee e : employees){
@@ -74,7 +73,7 @@ public class ReplanOptimizerResponse {
     public Collection<Feature> getUnplannedFeatures(Collection<Feature> featuresToPlan){
 
         return featuresToPlan
-                .stream().filter(feature -> !getAllPlannedFeatures().contains(feature.getName()))
+                .stream().filter(feature -> !getPlannedFeatures().contains(feature.getName()))
                 .collect(Collectors.toList());
     }
 

@@ -17,11 +17,7 @@
     <resource type="download" name="ReactivePlanPlugin.js" location="/js/ReactivePlanPlugin.js"/>  
     <resource type="download" name="images/" location="/images"/>  
     <context>ReactivePlanPlugin</context> 
-  </web-resource>  
-  <servlet name="Issue CRUD" i18n-name-key="issue-crud.name" key="issue-crud" class="com.atlassian.reactiveplan.servlet.IssueCRUD"> 
-    <description key="issue-crud.description">The Issue CRUD Plugin</description>  
-    <url-pattern>/issuecrud</url-pattern> 
-  </servlet>  
+  </web-resource>
   <servlet name="Test Servlet" i18n-name-key="test-servlet.name" key="test-servlet" class="com.atlassian.reactiveplan.testservlet.TestServlet"> 
     <description key="test-servlet.description">The Test Servlet Plugin</description>  
     <url-pattern>/testservlet</url-pattern> 
@@ -35,7 +31,5 @@
     <description key="replan-servlet.description">The Replan Servlet Plugin</description>  
     <url-pattern>/replanservlet</url-pattern> 
   </servlet>
-
-
 
 </atlassian-plugin>

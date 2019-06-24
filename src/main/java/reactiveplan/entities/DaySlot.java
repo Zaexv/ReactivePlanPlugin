@@ -1,6 +1,6 @@
 package reactiveplan.entities;
 
-import reactiveplan.jiraconverter.ReplanToJiraConverter;
+import reactiveplan.converter.ReplanToJiraConverter;
 
 import java.util.Date;
 

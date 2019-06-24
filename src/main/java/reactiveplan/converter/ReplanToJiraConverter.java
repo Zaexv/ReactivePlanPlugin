@@ -1,12 +1,10 @@
-package reactiveplan.jiraconverter;
+package reactiveplan.converter;
 
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.reactiveplan.logic.IssueLogic;
 import reactiveplan.entities.DaySlot;
 import reactiveplan.entities.Employee;
 
-import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;

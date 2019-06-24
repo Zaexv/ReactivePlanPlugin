@@ -10,6 +10,7 @@ import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.version.Version;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.JiraImport;
 import com.atlassian.reactiveplan.exception.ReplanException;
 import com.atlassian.reactiveplan.logic.IssueLogic;
@@ -20,8 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactiveplan.entities.DaySlot;
 import reactiveplan.entities.Employee;
-import reactiveplan.jiraconverter.JiraToReplanConverter;
-import reactiveplan.jiraconverter.ReplanToJiraConverter;
+import reactiveplan.converter.JiraToReplanConverter;
+import reactiveplan.converter.ReplanToJiraConverter;
 import reactiveplan.jsonhandler.ReplanOptimizerRequest;
 import reactiveplan.jsonhandler.ReplanOptimizerResponse;
 
@@ -35,6 +36,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.*;
 
+@Scanned
 public class ReplanServlet extends HttpServlet{
     private static final Logger log = LoggerFactory.getLogger(ReplanServlet.class);
 
@@ -57,7 +59,6 @@ public class ReplanServlet extends HttpServlet{
     private JiraAuthenticationContext authenticationContext;
     @JiraImport
     private ConstantsManager constantsManager;
-
 
 
     public ReplanServlet(IssueService issueService, ProjectService projectService,
@@ -238,7 +239,7 @@ public class ReplanServlet extends HttpServlet{
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
-            String sStackTrace = sw.toString(); // stack trace as a string
+            String sStackTrace = sw.toString();
             System.out.println(sStackTrace);
 
                     context.put("error", e);

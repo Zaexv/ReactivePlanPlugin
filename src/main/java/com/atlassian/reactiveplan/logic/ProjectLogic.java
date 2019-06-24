@@ -65,7 +65,7 @@ public class ProjectLogic {
         return ComponentAccessor.getProjectManager().getProjects();
     }
 
-    public List<Project> getProjectLeadBy(ApplicationUser user){
+    public List<Project> getProjectsLeadBy(ApplicationUser user){
         return ComponentAccessor.getProjectManager().getProjectsLeadBy(user);
     }
 
@@ -115,11 +115,6 @@ public class ProjectLogic {
         return versions;
     }
 
-    public Version getProjectVersionByName(String version, Project project){
-
-        return project.getVersions().stream().filter(versionObject -> versionObject.getName().equalsIgnoreCase(version)).findFirst().get();
-
-    }
 
 
 

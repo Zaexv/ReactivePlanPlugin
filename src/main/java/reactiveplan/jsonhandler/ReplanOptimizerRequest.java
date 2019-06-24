@@ -44,8 +44,6 @@ public class ReplanOptimizerRequest {
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(endpoint);
         httpPost.setEntity(new StringEntity(gson.toJson(this)));
-
-        /* Este handler está copiado de internet */
         ResponseHandler<String> responseHandler = response -> {
             int status = response.getStatusLine().getStatusCode();
             if (status >= 200 && status < 300) {

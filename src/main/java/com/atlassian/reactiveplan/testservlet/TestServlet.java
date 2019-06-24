@@ -21,8 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactiveplan.entities.Employee;
 import reactiveplan.entities.Feature;
-import reactiveplan.jiraconverter.JiraToReplanConverter;
-import reactiveplan.jiraconverter.ReplanToJiraConverter;
+import reactiveplan.converter.JiraToReplanConverter;
+import reactiveplan.converter.ReplanToJiraConverter;
 import reactiveplan.jsonhandler.ReplanOptimizerRequest;
 import reactiveplan.jsonhandler.ReplanOptimizerResponse;
 

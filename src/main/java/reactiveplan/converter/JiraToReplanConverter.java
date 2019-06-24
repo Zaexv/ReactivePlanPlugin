@@ -1,4 +1,4 @@
-package reactiveplan.jiraconverter;
+package reactiveplan.converter;
 
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.priority.Priority;
