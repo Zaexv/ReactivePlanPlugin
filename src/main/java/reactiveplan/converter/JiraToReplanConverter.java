@@ -183,7 +183,6 @@ public class JiraToReplanConverter {
 
         if(numWeeks == 0){
             numWeeks = 1;
-
         }
 
         return getDefaultCalendar(dailyHours, numDays, numWeeks);
@@ -205,7 +204,7 @@ public class JiraToReplanConverter {
         boolean skills = false;
         while(st.hasMoreTokens() && !token.equals("endskills")){
             token = st.nextToken();
-            if(skills){
+            if(skills && !token.equals("endskills")){
                skillslist.add(new Skill(token));
            }
             if(token.equalsIgnoreCase("_skills_")){

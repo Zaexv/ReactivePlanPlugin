@@ -222,6 +222,7 @@ public class IssueLogic {
                 issueService.validateUpdate(user, issue.getId(), issueInputParameters);
 
         if (result.getErrorCollection().hasAnyErrors()) {
+           System.out.println(issueKey + dueDate);
            throw new Error(result.getErrorCollection().toString());
         } else {
             issueService.update(user, result);

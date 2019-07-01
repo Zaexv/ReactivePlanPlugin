@@ -267,14 +267,21 @@ public class ReplanServlet extends HttpServlet{
         String versionKey = session.getAttribute("version-key").toString();
         try{
         Project pr = prlogic.getProjectByKey(projectKey);
-        Version ver = pr.getVersions() //Sólo debería haber una versión
+        Version ver = pr.getVersions()
                 .stream().filter(v -> v.getName().equals(versionKey)).findFirst().orElse(null);
 
         Gson gson = new Gson();
         ReplanOptimizerResponse response =
                 gson.fromJson(session.getAttribute("plan").toString(), ReplanOptimizerResponse.class);
         IssueLogic issueLogic = IssueLogic.getInstance(issueService,projectService,searchService);
-        ReplanToJiraConverter.persistAllFeaturesToJira(user,response.getEmployees(),issueLogic, new Date());
+
+        if(ver != null){
+            ReplanToJiraConverter.persistAllFeaturesToJira(user,response.getEmployees(),issueLogic, ver.getStartDate());
+        } else {
+            ReplanToJiraConverter.persistAllFeaturesToJira(user,response.getEmployees(),issueLogic, new Date());
+
+        }
+
 
 
         if (ver != null){

@@ -13,7 +13,6 @@ public class ReplanToJiraConverter {
 
 
             public static String getIssueBeginDateFromCalendar(List<DaySlot> calendar, String issueKey, Date versionStartDate ) {
-                //TODO test
                 Calendar c = Calendar.getInstance();
                 c.setTime(versionStartDate);
 
@@ -49,7 +48,6 @@ public class ReplanToJiraConverter {
 
             public static void persistAllFeaturesToJira(ApplicationUser user, Set<Employee> plannedEmployees, IssueLogic logic,
                                                         Date versionStartDate){
-                //TODO esto probablemente haya una forma más elegante de hacerlo.
                 Set<String> issuesAlreadyPersisted = new HashSet<>();
                 String issuebegindate;
                 String issueenddate;
